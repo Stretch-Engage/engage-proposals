@@ -1124,6 +1124,88 @@
   .roadmap-card.deferred { border-top-color: var(--rule); opacity: 0.65; }
   .roadmap-card.deferred h4 { color: var(--ink-light); }
 
+
+  /* ── SUCCESS CRITERIA ───────────────────────────────────────────────────── */
+  .success-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 720px) { .success-grid { grid-template-columns: 1fr; } }
+  .success-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 0.75rem;
+    padding: 1.4rem 1.5rem;
+    border-top: 3px solid var(--ink);
+  }
+  .success-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .success-card p {
+    font-size: 0.83rem;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+  .success-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+  }
+  .success-card ul li {
+    font-size: 0.82rem;
+    color: var(--ink-mid);
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.55;
+  }
+  .success-card ul li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--ink-light);
+    font-size: 0.75rem;
+  }
+  .success-card ul li strong { color: var(--ink); font-weight: 600; }
+  .success-principles {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 0.75rem;
+    padding: 1.8rem 2rem;
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  .success-principle {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .success-principle-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    font-style: italic;
+    color: white;
+    line-height: 1.2;
+  }
+  .success-principle p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.65;
+  }
+  .success-principle p strong { color: rgba(255,255,255,0.85); font-weight: 500; }
+
   /* ── FOOTER ─────────────────────────────────────────────────────────────── */
   .footer {
     background: #1a1a1a;
@@ -1163,6 +1245,7 @@
           <a href="#timeline">Timeline</a>
           <a href="#eca">ECA</a>
           <a href="#approach">Approach</a>
+          <a href="#success">Success</a>
           <a href="#roadmap">Roadmap</a>
         </nav>
       </div>
@@ -1191,8 +1274,8 @@
           <div class="cover-pricing-row">
             <div>
               <span class="cover-pricing-label">Project · fixed scope</span>
-              <span class="cover-pricing-amount">200 000 NOK</span>
-              <span class="cover-pricing-sub">134h · ~12 weeks · ex. MVA · 1 500 NOK/h</span>
+              <span class="cover-pricing-amount">220 000 NOK</span>
+              <span class="cover-pricing-sub">148h · ~12 weeks · ex. MVA · 1 500 NOK/h</span>
             </div>
             <div class="cover-pricing-divider">+</div>
             <div>
@@ -1231,6 +1314,7 @@
     <a href="#timeline">Timeline</a>
     <a href="#eca">ECA</a>
     <a href="#approach">Approach</a>
+    <a href="#success">Success criteria</a>
     <a href="#roadmap">Roadmap</a>
   </div>
   <span class="sticky-nav-title">eMabler API v2 Migration</span>
@@ -1464,21 +1548,21 @@
       <tr style="background:var(--paper-dark)"><td>Site endpoints (8 operations)</td><td>10h</td><td>15h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">13h</td><td><span class="badge badge-med">Medium</span></td><td>New first-class entity, bulk subsite ops, field renames</td></tr>
       <tr><td>Driver endpoints (7 operations)</td><td>10h</td><td>18h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">14h</td><td><span class="badge badge-med">Medium</span></td><td>homeGroup→homeSiteId, response expansion, new /sites assignment</td></tr>
       <tr style="background:var(--paper-dark)"><td>Tag endpoints (3 operations)</td><td>5h</td><td>8h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">6h</td><td><span class="badge badge-low">Low</span></td><td>Simpler paths, PATCH semantics</td></tr>
-      <tr><td>Integration endpoints (3 operations)</td><td>5h</td><td>10h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">8h</td><td><span class="badge badge-med">Medium</span></td><td>Response structure change + pagination</td></tr>
+      <tr><td>Integration endpoints (3 operations)</td><td>10h</td><td>20h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">15h</td><td><span class="badge badge-med">Medium</span></td><td>Response structure change + pagination</td></tr>
       <tr style="background:var(--paper-dark)"><td>Transactions (net new)</td><td>10h</td><td>18h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">14h</td><td><span class="badge badge-med">Medium</span></td><td>POST body pattern, pagination loop, new sub-endpoints</td></tr>
       <tr><td>Bulkification refactor (triggers)</td><td>8h</td><td>15h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">11h</td><td><span class="badge badge-med">Medium</span></td><td>Named in proposal; governor limit risk if deferred</td></tr>
       <tr style="background:var(--paper-dark)"><td>Permission Manager review</td><td>5h</td><td>10h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">8h</td><td><span class="badge badge-med">Medium</span></td><td>Bulk driver query question to eMabler unresolved</td></tr>
       <tr><td>Regression testing &amp; QA</td><td>13h</td><td>23h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">18h</td><td><span class="badge badge-high">High</span></td><td>AppExchange bar; two environments required</td></tr>
-      <tr style="background:var(--paper-dark)"><td>AppExchange security review prep</td><td>5h</td><td>10h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">8h</td><td><span class="badge badge-med">Medium</span></td><td>Re-scan after auth changes; ECA transition scoping</td></tr>
+      <tr style="background:var(--paper-dark)"><td>AppExchange security review prep</td><td>10h</td><td>20h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">15h</td><td><span class="badge badge-med">Medium</span></td><td>Re-scan after auth changes; ECA transition scoping</td></tr>
     </tbody>
     <tfoot>
       <tr>
         <td>Total (billable incl. overhead)</td>
-        <td style="text-align:center;font-family:'DM Mono',monospace">95h</td>
-        <td style="text-align:center;font-family:'DM Mono',monospace">168h</td>
-        <td style="text-align:center;font-family:'DM Mono',monospace;font-size:1rem;color:#fff">134h</td>
+        <td style="text-align:center;font-family:'DM Mono',monospace">105h</td>
+        <td style="text-align:center;font-family:'DM Mono',monospace">188h</td>
+        <td style="text-align:center;font-family:'DM Mono',monospace;font-size:1rem;color:#fff">148h</td>
         <td></td>
-        <td style="color:rgba(245,242,238,0.75);font-size:0.82rem">Fixed scope: <strong style="color:#fff">200 000 NOK</strong> ex. MVA &nbsp;·&nbsp; Range: 160 000 – 240 000 NOK &nbsp;·&nbsp; 1 500 NOK/h &nbsp;·&nbsp; ±20%</td>
+        <td style="color:rgba(245,242,238,0.75);font-size:0.82rem">Fixed scope: <strong style="color:#fff">220 000 NOK</strong> ex. MVA &nbsp;·&nbsp; Range: 175 000 – 265 000 NOK &nbsp;·&nbsp; 1 500 NOK/h &nbsp;·&nbsp; ±20%</td>
       </tr>
     </tfoot>
   </table>
@@ -1490,14 +1574,14 @@
 <section id="timeline" class="page">
   <p class="section-label">05 — Delivery Timeline &amp; Cost</p>
   <h2 class="section-title">Project plan · starting April 2026</h2>
-  <p class="body-text">2 days/week dedicated resource — 5.5 effective hours/day = <strong>11h/week</strong>. Fixed project scope of <strong>200 000 NOK ex. MVA</strong>, invoiced monthly as work progresses. The LCM retainer (15 000 NOK/mo) runs independently alongside.</p>
+  <p class="body-text">2 days/week dedicated resource — 5.5 effective hours/day = <strong>11h/week</strong>. Fixed project scope of <strong>220 000 NOK ex. MVA</strong>, invoiced monthly as work progresses. The LCM retainer (15 000 NOK/mo) runs independently alongside.</p>
 
   <div class="tl-card" style="max-width:720px">
     <div class="tl-card-header">
       <p class="tl-card-eyebrow fast">Project · 2 days/week · 1 dev + SME</p>
       <h3>11h/week · ~12 weeks · Done mid-July 2026</h3>
       <p class="tl-card-sub">Dedicated resource, 5.5 effective hours/day. SME available for reviews, decisions and eMabler liaison.</p>
-      <span class="tl-card-end fast">200 000 NOK fixed · ex. MVA · ±20% range: 160 000 – 240 000 NOK</span>
+      <span class="tl-card-end fast">220 000 NOK fixed · ex. MVA · ±20% range: 175 000 – 265 000 NOK</span>
     </div>
 
     <div class="tl-months">
@@ -1548,10 +1632,10 @@
         <tbody>
           <tr><td>April 2026</td><td>44h</td><td>66 000</td><td>66 000</td></tr>
           <tr><td>May 2026</td><td>44h</td><td>66 000</td><td>132 000</td></tr>
-          <tr><td>June – July 2026</td><td>46h</td><td>68 000</td><td>200 000</td></tr>
+          <tr><td>June – July 2026</td><td>60h</td><td>84 000</td><td>220 000</td></tr>
         </tbody>
         <tfoot>
-          <tr><td>Total</td><td>134h</td><td colspan="2">200 000 NOK ex. MVA</td></tr>
+          <tr><td>Total</td><td>134h</td><td colspan="2">220 000 NOK ex. MVA</td></tr>
         </tfoot>
       </table>
     </div>
@@ -1609,11 +1693,84 @@
   <p class="body-text" style="color: var(--ink-light); font-size: 0.82rem;">Reference: Salesforce Knowledge Article 005228017 and ISV partner guidelines on the 2026 retirement of manual legacy app creation.</p>
 </section>
 
+<!-- ── SUCCESS CRITERIA ──────────────────────────────────────────────────── -->
+<section id="success" class="page">
+  <p class="section-label">07 — Key Success Criteria</p>
+  <h2 class="section-title">How we work together</h2>
+  <p class="body-text">A successful migration is as much about collaboration as it is about code. These are the working agreements and structural requirements we need in place from day one — for both the project and the ongoing LCM.</p>
+
+  <div class="success-grid">
+
+    <div class="success-card">
+      <h4>📋 Shared Jira — single source of truth</h4>
+      <p>All work — project tickets, LCM tasks, bugs, backlog items — lives in one shared Jira project that both teams have access to.</p>
+      <ul>
+        <li><strong>Project board</strong> tracks the migration sprint by sprint with clear acceptance criteria per ticket</li>
+        <li><strong>LCM board</strong> tracks ongoing maintenance, open questions, and discovered issues with full visibility</li>
+        <li><strong>Backlog</strong> captures the roadmap items from this proposal (Agentforce, Data Cloud, ECA) as groomed future epics</li>
+        <li>No work happens outside Jira — if it's not a ticket, it doesn't exist</li>
+      </ul>
+    </div>
+
+    <div class="success-card">
+      <h4>💬 Slack — joint team channel</h4>
+      <p>A dedicated shared Slack channel between Stretch Engage and eMabler as the primary support and communication channel for the connector.</p>
+      <ul>
+        <li><strong>Day-to-day questions</strong> — faster than email, creates a searchable record</li>
+        <li><strong>Incident handling</strong> — production issues raised and tracked in Slack before a Jira ticket is created</li>
+        <li><strong>Jira and GitHub notifications</strong> piped into the channel so both teams see progress in real time</li>
+        <li><strong>LCM support</strong> — the channel is the support entry point for eMabler's team during the retainer</li>
+      </ul>
+    </div>
+
+    <div class="success-card">
+      <h4>🔍 Open questions resolved before dev starts</h4>
+      <p>Several technical questions to eMabler remain open and block accurate scoping. These must be answered before the project kicks off.</p>
+      <ul>
+        <li>Does <strong>GET /v2/drivers</strong> support bulk queries? (Salesforce bulkified context requires this)</li>
+        <li>Max chargers/sites per driver — determines Permission Manager bulk strategy</li>
+        <li>Firmware, Diagnostics, Payment Terminal endpoints — confirmed location in v2 or deprecated?</li>
+        <li>Access to a <strong>shared test environment</strong> with realistic data for regression testing</li>
+      </ul>
+    </div>
+
+    <div class="success-card">
+      <h4>✅ Definition of done — migration</h4>
+      <p>The project is complete when all of the following are true — not before.</p>
+      <ul>
+        <li>All active connector endpoints migrated and verified against v2 in test environment</li>
+        <li>Bulkification refactor merged and governor limit tests passing</li>
+        <li>AppExchange Security Scanner re-run with no new critical findings</li>
+        <li>Package version submitted and approved for AppExchange listing update</li>
+        <li>Regression test suite passing in both test and production environments</li>
+        <li>eMabler team sign-off on end-to-end flow validation</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="success-principles">
+    <div class="success-principle">
+      <span class="success-principle-title">Transparency over updates</span>
+      <p>We don't wait for status meetings to share progress. Jira is live, Slack is open, and both teams can see what's in progress, what's blocked, and what's done at any time. <strong>No surprises.</strong></p>
+    </div>
+    <div class="success-principle">
+      <span class="success-principle-title">One backlog, one team</span>
+      <p>There is no "Stretch backlog" and "eMabler backlog". There is one shared product backlog for the connector. Both teams contribute, both teams groom it, both teams own the outcome. <strong>Shared accountability.</strong></p>
+    </div>
+    <div class="success-principle">
+      <span class="success-principle-title">LCM is proactive, not reactive</span>
+      <p>The monthly retainer is not a break-fix service. Each month's hours are planned in advance — maintenance, improvements, and backlog progress. <strong>No wasted capacity.</strong></p>
+    </div>
+  </div>
+
+</section>
+
 <hr class="divider" style="margin: 0;">
 
 <!-- ── RECOMMENDED APPROACH ───────────────────────────────────────────────── -->
 <section id="approach" class="page">
-  <p class="section-label">07 — Recommended Approach</p>
+  <p class="section-label">08 — Recommended Approach</p>
   <h2 class="section-title">How to execute the migration</h2>
 
   <ol class="seq-list">
@@ -1669,7 +1826,7 @@
           Post-install script to fix SetupEntityAccess permission linkage
         </div>
       </div>
-      <div class="roadmap-phase-time">200 000 NOK · ~134h · mid-2026</div>
+      <div class="roadmap-phase-time">220 000 NOK · ~148h · mid-2026</div>
     </div>
 
     <div class="roadmap-phase">
