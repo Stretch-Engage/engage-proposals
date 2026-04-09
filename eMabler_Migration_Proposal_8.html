@@ -1517,8 +1517,8 @@
   <ul class="questions-list">
     <li><strong>Bulk driver query:</strong> Does <code>GET /v2/drivers</code> support querying multiple drivers in a single request? In Salesforce bulkified contexts, the connector may have 200 driver IDs to resolve simultaneously — individual round-trips would be prohibitive.</li>
     <li><strong>Max chargers/sites per driver:</strong> What is the maximum number of chargers or sites assignable to a single driver? Determines whether the Permission Manager needs its own bulk handling strategy.</li>
-    <li><strong>Firmware &amp; Diagnostics:</strong> These endpoints were in v1 but are absent from the v2 Entity Management spec. Are they available in a v2 sub-package (e.g. Express API)?</li>
-    <li><strong>Payment Terminals &amp; Operators:</strong> Present in v1 but not found in the v2 spec. Are these discontinued or moved to another v2 sub-package?</li>
+    <li><strong>Firmware &amp; Diagnostics:</strong> Present in v1 (<code>POST /charger/firmware/{id}</code>, <code>POST /charger/diagnostics/{id}</code>) but not found in the v2 Entity Management spec. eMabler to confirm whether these moved to a v2 sub-package (e.g. Express API) or are handled differently in v2.</li>
+    <li><strong>Payment Terminals &amp; Operators:</strong> Full CRUD present in v1 but not found in the v2 Entity Management spec. eMabler to confirm whether these moved to another v2 sub-package, or whether the connector is expected to use them at all.</li>
   </ul>
 </section>
 
@@ -1528,7 +1528,7 @@
 <section id="estimate" class="page">
   <p class="section-label">04 — Effort Estimate</p>
   <h2 class="section-title">Hours by work area</h2>
-  <p class="body-text">Based on analysis of v1.1.1 and v2.0.1 Swagger specs and the team's proposal document. Assumes one senior Salesforce developer. A one-day code audit would allow the estimate to be tightened by confirming which endpoints are actively used.</p>
+  <p class="body-text">Based on analysis of v1.1.1 and v2.0.1 Swagger specs and the team's proposal document. Assumes one senior Salesforce developer.</p>
 
   <table class="est-table">
     <thead>
@@ -1557,7 +1557,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <td>Total (billable incl. overhead)</td>
+        <td>Total</td>
         <td style="text-align:center;font-family:'DM Mono',monospace">105h</td>
         <td style="text-align:center;font-family:'DM Mono',monospace">188h</td>
         <td style="text-align:center;font-family:'DM Mono',monospace;font-size:1rem;color:#fff">148h</td>
@@ -1574,13 +1574,13 @@
 <section id="timeline" class="page">
   <p class="section-label">05 — Delivery Timeline &amp; Cost</p>
   <h2 class="section-title">Project plan · starting April 2026</h2>
-  <p class="body-text">2 days/week dedicated resource — 5.5 effective hours/day = <strong>11h/week</strong>. Fixed project scope of <strong>220 000 NOK ex. MVA</strong>, invoiced monthly as work progresses. The LCM retainer (15 000 NOK/mo) runs independently alongside.</p>
+  <p class="body-text">2 days/week dedicated resource. Fixed project scope of <strong>220 000 NOK ex. MVA</strong>, invoiced monthly as work progresses. The LCM retainer (15 000 NOK/mo) runs independently alongside.</p>
 
   <div class="tl-card" style="max-width:720px">
     <div class="tl-card-header">
       <p class="tl-card-eyebrow fast">Project · 2 days/week · 1 dev + SME</p>
-      <h3>11h/week · ~12 weeks · Done mid-July 2026</h3>
-      <p class="tl-card-sub">Dedicated resource, 5.5 effective hours/day. SME available for reviews, decisions and eMabler liaison.</p>
+      <h3>2 days/week · Done mid-July 2026</h3>
+      <p class="tl-card-sub">Dedicated resource, 2 days per week. SME available for reviews, decisions and eMabler liaison.</p>
       <span class="tl-card-end fast">220 000 NOK fixed · ex. MVA · ±20% range: 175 000 – 265 000 NOK</span>
     </div>
 
@@ -1729,7 +1729,7 @@
       <ul>
         <li>Does <strong>GET /v2/drivers</strong> support bulk queries? (Salesforce bulkified context requires this)</li>
         <li>Max chargers/sites per driver — determines Permission Manager bulk strategy</li>
-        <li>Firmware, Diagnostics, Payment Terminal endpoints — confirmed location in v2 or deprecated?</li>
+        <li>Firmware, Diagnostics, Payment Terminal endpoints — in v1 but not found in v2 Entity Management spec; confirm location in v2 with eMabler</li>
         <li>Access to a <strong>shared test environment</strong> with realistic data for regression testing</li>
       </ul>
     </div>
@@ -1775,7 +1775,7 @@
 
   <ol class="seq-list">
     <li><span><strong>Code audit (1 day)</strong> — Walk the connector codebase and confirm which API endpoints are actively called. This de-risks the estimate, removes ambiguity, and is worth doing as a paid first step before committing to a fixed scope.</span></li>
-    <li><span><strong>Resolve open questions with eMabler</strong> — Particularly bulk driver querying and the location of Firmware/Diagnostics/PaymentTerminal endpoints in v2. These affect scope and architecture decisions.</span></li>
+    <li><span><strong>Resolve open questions with eMabler</strong> — Particularly bulk driver querying and the location of Firmware, Diagnostics, and Payment Terminal endpoints which existed in v1 but are absent from the v2 Entity Management spec. These affect scope.</span></li>
     <li><span><strong>Auth and base URL migration first</strong> — Unblocks all subsequent testing against v2 endpoints. Must be done before anything else can be validated.</span></li>
     <li><span><strong>Domain-by-domain migration</strong> — Site (including the group→site rename), Charger, Driver, Tag, Integration, Remote Actions. Each domain is independently testable and deployable.</span></li>
     <li><span><strong>Bulkification refactor</strong> — Tackle during or immediately after domain migration while the code is open. Deferring to a separate sprint increases cost and risk.</span></li>
@@ -1920,23 +1920,23 @@
 
   </div>
 
-  <h3 class="sub-title" style="margin-top:2rem">Explicit non-goals</h3>
+  <h3 class="sub-title" style="margin-top:2rem">Deferred to later phases</h3>
   <div class="roadmap-nongrid">
     <div class="roadmap-card deferred">
       <h4>Custom conversational UI</h4>
-      <p>Building a bespoke chat or conversational interface is not the right investment. Expose actions that AI agents can invoke instead — Agentforce handles the conversation layer.</p>
+      <p>Not the right investment at this stage. Agentforce handles the conversation layer — the connector's role is to expose reliable actions that agents can invoke, not to build a UI on top.</p>
     </div>
     <div class="roadmap-card deferred">
       <h4>Real-time socket-level telemetry streaming</h4>
-      <p>Not in scope until the data model and Data Cloud foundation are established. Premature investment before v2 and Data Cloud creates tech debt.</p>
+      <p>Deferred until the Data Cloud foundation (Phase 2) is in place. Building this before the data model is defined creates rework and tech debt.</p>
     </div>
     <div class="roadmap-card deferred">
-      <h4>Loyalty Cloud before Data Cloud</h4>
-      <p>Loyalty Cloud without a Data Cloud foundation has no analytics backbone. Defer until Phase 2 is complete and customer demand is validated.</p>
+      <h4>Loyalty Cloud</h4>
+      <p>Deferred until Phase 2 (Data Cloud) is complete and there is validated customer demand. Loyalty Cloud without a data foundation has no analytics backbone to build on.</p>
     </div>
     <div class="roadmap-card deferred">
-      <h4>Broad feature expansion before v2</h4>
-      <p>Any new functionality built on v1 increases migration complexity and technical debt. The v2 migration is a hard prerequisite for all new development.</p>
+      <h4>Feature expansion before v2 is complete</h4>
+      <p>Any new functionality built on v1 increases migration complexity. The v2 migration is the prerequisite for everything else — new features come after the foundation is solid.</p>
     </div>
   </div>
 
