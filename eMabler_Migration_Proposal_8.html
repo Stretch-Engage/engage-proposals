@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eMabler Connector — API v2 Migration Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --ink-mid: #4a4a4a;
+    --ink-light: #888888;
+    --paper: #ffffff;
+    --paper-dark: #f2f2f2;
+    --accent: #1a1a1a;
+    --accent-dim: #ebebeb;
+    --red: #c0392b;
+    --red-dim: #fde8e6;
+    --amber: #9a6200;
+    --amber-dim: #fef3d6;
+    --green: #1a6e38;
+    --green-dim: #e0f5e8;
+    --rule: #e0e0e0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 15px; scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.65;
+  }
+
+  /* ── COVER ──────────────────────────────────────────────────────────────── */
+  .cover {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2rem 4rem 1.8rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: #ffffff;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 4rem; right: 4rem;
+    height: 1px;
+    background: rgba(255,255,255,0.12);
+    pointer-events: none;
+  }
+  .cover-eyebrow {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 0.6rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 300;
+    font-size: clamp(1.6rem, 2.2vw, 2.4rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    max-width: 800px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.25s forwards;
+  }
+  .cover-title em {
+    font-style: italic;
+    color: rgba(255,255,255,0.75);
+  }
+  .cover-sub {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.45);
+    margin-top: 0.3rem;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.4s forwards;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 2rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.55s forwards;
+    flex-wrap: wrap;
+  }
+  .cover-meta-item label {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    display: block;
+    margin-bottom: 0.15rem;
+    font-weight: 700;
+  }
+  .cover-meta-item span {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.75);
+  }
+  .cover-nav {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.6rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.65s forwards;
+  }
+  .cover-nav a {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 9999px;
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .cover-nav a:hover {
+    border-color: rgba(255,255,255,0.8);
+    color: #ffffff;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .cover-summary {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.75s forwards;
+  }
+  .cover-summary-lead {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: -0.01em;
+  }
+  .cover-summary-lead strong {
+    color: var(--paper);
+    font-weight: 700;
+    font-style: italic;
+  }
+  .cover-summary-pills {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    justify-content: center;
+  }
+  .cover-pill {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 0.4rem;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.58);
+    line-height: 1.45;
+  }
+  .cover-pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.6);
+    flex-shrink: 0;
+    margin-top: 0.4rem;
+  }
+  .cover-pill strong { color: rgba(245,242,238,0.9); font-weight: 500; }
+  .cover-pill-pricing {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.2);
+    padding: 0.8rem 1rem;
+  }
+  .cover-pricing-row {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    width: 100%;
+  }
+  .cover-pricing-row > div { display: flex; flex-direction: column; gap: 0.15rem; flex: 1; }
+  .cover-pricing-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+  .cover-pricing-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.92);
+    line-height: 1.1;
+  }
+  .cover-pricing-sub {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.35);
+    font-family: 'DM Mono', monospace;
+  }
+  .cover-pricing-divider {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.2);
+    flex: 0 !important;
+    padding: 0 0.3rem;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LAYOUT ─────────────────────────────────────────────────────────────── */
+  .page { max-width: 1120px; margin: 0 auto; padding: 5rem 3rem; }
+  .page + .page { padding-top: 0; }
+
+  /* ── SECTION HEADERS ────────────────────────────────────────────────────── */
+  .section-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 0.6rem;
+    font-weight: 700;
+  }
+  h2.section-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+  }
+  h3.sub-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 2rem 0 0.5rem;
+  }
+  p.body-text {
+    color: var(--ink-mid);
+    font-size: 0.95rem;
+    line-height: 1.75;
+    max-width: 72ch;
+    margin-bottom: 0.8rem;
+  }
+
+  /* ── SUMMARY STRIP ──────────────────────────────────────────────────────── */
+  .summary-strip {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3.5rem;
+    border-radius: 1rem;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary-strip::after {
+    content: '';
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 6rem;
+    font-weight: 600;
+    color: rgba(26,92,255,0.2);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .summary-strip h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 300;
+    font-size: 1.5rem;
+    color: var(--paper);
+    margin-bottom: 0.8rem;
+  }
+  .summary-strip p {
+    font-size: 0.9rem;
+    color: rgba(245,242,238,0.65);
+    line-height: 1.7;
+    max-width: 60ch;
+  }
+  .summary-strip strong { color: rgba(245,242,238,0.9); font-weight: 500; }
+
+  /* ── SCOPE CARDS ────────────────────────────────────────────────────────── */
+  .scope-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .scope-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 0.75rem;
+    padding: 1.4rem 1.5rem;
+    position: relative;
+  }
+  .scope-card .card-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink);
+    letter-spacing: 0.12em;
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+  .scope-card h4 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .scope-card p {
+    font-size: 0.83rem;
+    color: var(--ink-light);
+    line-height: 1.6;
+  }
+  .scope-card.out-scope {
+    background: var(--paper-dark);
+    border-style: dashed;
+    opacity: 0.7;
+  }
+  .scope-card.out-scope .card-num { color: var(--ink-light); }
+
+  /* ── DIVIDER ────────────────────────────────────────────────────────────── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 4rem 0;
+  }
+
+  /* ── ESTIMATE TABLE ─────────────────────────────────────────────────────── */
+  .est-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+  .est-table thead tr {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .est-table thead th {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .est-table thead th:nth-child(2),
+  .est-table thead th:nth-child(3) { text-align: center; width: 70px; }
+  .est-table tbody tr:nth-child(even) { background: var(--paper-dark); }
+  .est-table tbody tr:hover { background: var(--paper-dark); }
+  .est-table td {
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .est-table td:nth-child(2),
+  .est-table td:nth-child(3) { text-align: center; font-family: 'DM Mono', monospace; font-size: 0.82rem; }
+  .est-table td:last-child { color: var(--ink-light); font-size: 0.8rem; }
+  .est-table tfoot tr { background: var(--ink); color: var(--paper); }
+  .est-table tfoot td {
+    padding: 0.9rem 1rem;
+    border-bottom: none;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+  }
+  .est-table tfoot td:nth-child(2),
+  .est-table tfoot td:nth-child(3) { text-align: center; color: rgba(255,255,255,0.7); font-size: 1rem; }
+
+  /* ── RISK BADGE ─────────────────────────────────────────────────────────── */
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge-high { background: var(--red-dim); color: var(--red); }
+  .badge-med { background: var(--amber-dim); color: var(--amber); }
+  .badge-low { background: var(--green-dim); color: var(--green); }
+  .badge-break { background: var(--red-dim); color: var(--red); }
+  .badge-change { background: var(--amber-dim); color: var(--amber); }
+  .badge-new { background: var(--green-dim); color: var(--green); }
+
+  /* ── ENDPOINT TABLES ────────────────────────────────────────────────────── */
+  .ep-section { margin-bottom: 2.5rem; }
+  .ep-group-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 900;
+    padding: 0.5rem 0;
+    border-top: 2px solid var(--ink);
+    margin-top: 2rem;
+    margin-bottom: 0;
+  }
+  .ep-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin-bottom: 0;
+  }
+  .ep-table thead th {
+    background: var(--paper-dark);
+    padding: 0.65rem 0.9rem;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.63rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    border-bottom: 1px solid var(--rule);
+  }
+  .ep-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.018); }
+  .ep-table tbody tr:hover { background: var(--paper-dark); }
+  .ep-table td {
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid rgba(212,206,199,0.5);
+    vertical-align: top;
+  }
+  .ep-table td:nth-child(2),
+  .ep-table td:nth-child(3) {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-mid);
+  }
+  .ep-table td:last-child { width: 90px; }
+  .ep-table .del { color: var(--ink-light); text-decoration: line-through; }
+  .ep-table .add { color: var(--ink); }
+
+  /* ── BREAKING DETAIL CARDS ──────────────────────────────────────────────── */
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 720px) { .detail-grid { grid-template-columns: 1fr; } }
+  .detail-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border-top: 3px solid var(--ink);
+  }
+  .detail-card h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .detail-card p {
+    font-size: 0.83rem;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+  .detail-card code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    background: var(--paper-dark);
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.2rem;
+  }
+
+  /* ── OPEN QUESTIONS ─────────────────────────────────────────────────────── */
+  .questions-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .questions-list li {
+    background: white;
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 0.5rem 0.5rem 0;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.88rem;
+    color: var(--ink-mid);
+    line-height: 1.65;
+  }
+  .questions-list li strong { color: var(--ink); font-weight: 600; }
+
+  /* ── ECA TABLE ──────────────────────────────────────────────────────────── */
+  .eca-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin: 1.2rem 0 2rem;
+  }
+  .eca-table thead tr { background: var(--ink); color: var(--paper); }
+  .eca-table thead th {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .eca-table tbody tr:nth-child(even) { background: var(--paper-dark); }
+  .eca-table td {
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .eca-table td:first-child { font-weight: 600; width: 180px; color: var(--ink); }
+
+  /* ── PHASE ROADMAP ──────────────────────────────────────────────────────── */
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0 2.5rem;
+  }
+  @media (max-width: 720px) { .phases { grid-template-columns: 1fr; } }
+  .phase {
+    border: 1px solid var(--rule);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    position: relative;
+    background: white;
+  }
+  .phase-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent-dim);
+    margin-bottom: 0.5rem;
+  }
+  .phase h4 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .phase-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    margin-bottom: 0.7rem;
+    display: block;
+  }
+  .phase p { font-size: 0.82rem; color: var(--ink-light); line-height: 1.65; }
+
+  /* ── RECOMMENDED SEQUENCE ───────────────────────────────────────────────── */
+  .seq-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    counter-reset: seq;
+  }
+  .seq-list li {
+    counter-increment: seq;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 0.6rem;
+    padding: 1rem 1.2rem;
+    font-size: 0.88rem;
+    color: var(--ink-mid);
+    line-height: 1.65;
+  }
+  .seq-list li::before {
+    content: counter(seq);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    min-width: 1.6rem;
+    height: 1.6rem;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+  .seq-list li strong { color: var(--ink); font-weight: 600; }
+
+  /* ── COVER inner layout ──────────────────────────────────────────────────── */
+  .cover-inner { display: flex; flex-direction: column; gap: 1rem; }
+  .cover-top {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 2rem;
+    align-items: start;
+  }
+  .cover-est-box {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 0.75rem;
+    padding: 1.1rem 1.2rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.5s forwards;
+  }
+  .cover-est-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 0.2rem;
+    font-weight: 700;
+  }
+  .cover-est-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--paper);
+    margin-bottom: 0;
+  }
+  .cover-est-big span { font-size: 1.3rem; color: rgba(255,255,255,0.7); }
+  .cover-est-range {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.35);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 0.7rem;
+    margin-top: 0.1rem;
+  }
+  .cover-est-rows { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.6rem; }
+  .cover-est-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.55);
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .cover-est-row span:last-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.8);
+  }
+  .cover-est-note {
+    font-size: 0.72rem;
+    color: rgba(245,242,238,0.35);
+    font-style: italic;
+  }
+
+  /* ── TIMELINE SECTION ───────────────────────────────────────────────────── */
+  .timeline-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+  @media (max-width: 800px) { .timeline-grid { grid-template-columns: 1fr; } }
+  .tl-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+  .tl-card-header {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .tl-card-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+  .tl-card-eyebrow.slow { color: var(--ink-light); font-weight: 700; }
+  .tl-card-eyebrow.fast { color: var(--ink); font-weight: 700; }
+  .tl-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.2rem; }
+  .tl-card-sub { font-size: 0.8rem; color: var(--ink-light); }
+  .tl-card-end {
+    display: inline-block;
+    margin-top: 0.6rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2rem;
+    font-weight: 500;
+  }
+  .tl-card-end.slow { background: var(--paper-dark); color: var(--ink-light); border: 1px solid var(--rule); }
+  .tl-card-end.fast { background: var(--paper-dark); color: var(--ink); }
+
+  .tl-months { padding: 1.2rem 1.5rem; }
+  .tl-month-row {
+    display: grid;
+    grid-template-columns: 70px 1fr 50px;
+    gap: 0.6rem;
+    align-items: center;
+    margin-bottom: 0.55rem;
+  }
+  .tl-month-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-light);
+  }
+  .tl-bar-wrap {
+    background: var(--paper-dark);
+    border-radius: 4px;
+    height: 22px;
+    position: relative;
+    overflow: visible;
+  }
+  .tl-bar {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: white;
+    white-space: nowrap;
+    min-width: 4px;
+    transition: width 0.4s ease;
+    position: relative;
+  }
+  .tl-bar.phase-1 { background: #1a1a1a; }
+  .tl-bar.phase-2 { background: #2e2e2e; }
+  .tl-bar.phase-3 { background: #555555; }
+  .tl-bar.phase-4 { background: #777777; }
+  .tl-bar.phase-done { background: #1a1a1a; border: 2px solid #1a1a1a; }
+  .tl-bar.phase-audit { background: #888888; font-style: italic; }
+  .tl-month-hours {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-mid);
+    text-align: right;
+  }
+  .tl-month-row.milestone .tl-month-label { color: var(--ink); font-weight: 500; }
+  .tl-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 0.8rem 1.5rem 1.2rem;
+    border-top: 1px solid var(--rule);
+  }
+  .tl-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    color: var(--ink-mid);
+  }
+  .tl-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .tl-totals {
+    display: flex;
+    gap: 1rem;
+    padding: 0.9rem 1.5rem;
+    background: var(--paper-dark);
+    border-top: 1px solid var(--rule);
+    font-size: 0.78rem;
+    color: var(--ink-mid);
+  }
+  .tl-totals strong { color: var(--ink); }
+  .tl-note {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.75rem;
+    color: var(--ink-light);
+    font-style: italic;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* ── COST TABLE ─────────────────────────────────────────────────────────── */
+  .cost-table-wrap {
+    padding: 0 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+  .cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+  }
+  .cost-table thead tr { background: var(--paper-dark); }
+  .cost-table thead th {
+    padding: 0.55rem 0.7rem;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-weight: 500;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cost-table thead th:nth-child(2),
+  .cost-table thead th:nth-child(3),
+  .cost-table thead th:nth-child(4) { text-align: right; }
+  .cost-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.02); }
+  .cost-table td {
+    padding: 0.48rem 0.7rem;
+    border-bottom: 1px solid rgba(212,206,199,0.4);
+    color: var(--ink-mid);
+  }
+  .cost-table td:nth-child(2),
+  .cost-table td:nth-child(3),
+  .cost-table td:nth-child(4) {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+  }
+  .cost-table td:nth-child(4) { color: var(--ink); font-weight: 500; }
+  .cost-table tfoot tr { background: var(--ink); }
+  .cost-table tfoot td {
+    padding: 0.6rem 0.7rem;
+    border-bottom: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--paper);
+  }
+  .cost-table tfoot td:nth-child(2) { text-align: right; }
+  .cost-table tfoot td:nth-child(3) { text-align: right; color: rgba(255,255,255,0.7); }
+
+  /* ── COST COMPARISON ────────────────────────────────────────────────────── */
+  .cost-compare {
+    margin-top: 2rem;
+    background: var(--ink);
+    border-radius: 0.75rem;
+    padding: 1.8rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .cost-compare-item { display: flex; flex-direction: column; gap: 0.3rem; }
+  .cost-compare-item:last-child { text-align: right; align-items: flex-end; }
+  .cost-compare-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,242,238,0.4);
+  }
+  .cost-compare-total {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--paper);
+    line-height: 1.1;
+  }
+  .cost-compare-sub {
+    font-size: 0.75rem;
+    color: rgba(245,242,238,0.45);
+    line-height: 1.5;
+    max-width: 32ch;
+  }
+  .cost-compare-item:last-child .cost-compare-total { color: rgba(255,255,255,0.7); }
+  .cost-compare-divider {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: rgba(245,242,238,0.2);
+    text-align: center;
+  }
+
+  /* ── STICKY NAV ─────────────────────────────────────────────────────────── */
+  .sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #ffffff;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    padding: 0 3rem;
+    height: 52px;
+    gap: 2rem;
+  }
+  .sticky-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--ink);
+    font-family: 'Lato', sans-serif;
+    font-weight: 900;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .sticky-nav-links {
+    display: flex;
+    gap: 0;
+    flex: 1;
+  }
+  .sticky-nav-links a {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    text-decoration: none;
+    padding: 0 0.9rem;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .sticky-nav-links a:hover {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+  }
+  .sticky-nav-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    color: var(--ink-light);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── ROADMAP ────────────────────────────────────────────────────────────── */
+  .roadmap-intro {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 0.75rem;
+    padding: 1.8rem 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .roadmap-intro p {
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.7;
+    max-width: 70ch;
+  }
+  .roadmap-intro strong { color: rgba(255,255,255,0.9); }
+  .roadmap-intro-badge {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  .roadmap-intro-badge span:first-child {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: white;
+  }
+  .roadmap-intro-badge span:last-child {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .roadmap-phases {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  .roadmap-phase {
+    background: var(--paper);
+    padding: 1.4rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .roadmap-phase-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .roadmap-phase-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--paper-dark);
+  }
+  .roadmap-phase-num.active { color: var(--ink); }
+  .roadmap-phase-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-weight: 700;
+  }
+  .roadmap-phase-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .roadmap-phase-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ink-light);
+    margin-top: auto;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--rule);
+  }
+  .roadmap-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+  }
+  .roadmap-item {
+    font-size: 0.8rem;
+    color: var(--ink-mid);
+    padding: 0.45rem 0.6rem;
+    background: var(--paper-dark);
+    border-radius: 0.3rem;
+    line-height: 1.45;
+    border-left: 2px solid var(--rule);
+  }
+  .roadmap-item.current {
+    background: var(--ink);
+    color: rgba(255,255,255,0.85);
+    border-left-color: var(--ink);
+  }
+  .roadmap-item.highlight {
+    border-left-color: var(--ink);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .roadmap-item-tag {
+    display: block;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--ink-light);
+    margin-bottom: 0.15rem;
+  }
+  .roadmap-item.current .roadmap-item-tag { color: rgba(255,255,255,0.4); }
+  .roadmap-item.highlight .roadmap-item-tag { color: var(--ink-light); }
+
+  .roadmap-nongrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .roadmap-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 0.75rem;
+    padding: 1.3rem 1.4rem;
+    border-top: 3px solid var(--ink);
+  }
+  .roadmap-card h4 {
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+  .roadmap-card p {
+    font-size: 0.8rem;
+    color: var(--ink-mid);
+    line-height: 1.65;
+  }
+  .roadmap-card.deferred { border-top-color: var(--rule); opacity: 0.65; }
+  .roadmap-card.deferred h4 { color: var(--ink-light); }
+
+  /* ── FOOTER ─────────────────────────────────────────────────────────────── */
+  .footer {
+    background: #1a1a1a;
+    color: rgba(255,255,255,0.35);
+    padding: 2rem 3rem;
+    font-size: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .footer span { color: rgba(255,255,255,0.6); }
+</style>
+</head>
+<body>
+
+<!-- ── COVER ──────────────────────────────────────────────────────────────── -->
+<div class="cover" id="top">
+  <div class="cover-inner">
+
+    <div class="cover-top">
+      <div class="cover-heading">
+        <p class="cover-eyebrow">
+      <svg width="22" height="21" viewBox="0 0 40 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:0.5rem;opacity:0.7"><path d="M0.483398 20.1162C3.27689 23.3633 6.30095 24.8749 10.0605 24.875C11.8669 24.875 13.6107 24.5484 15.291 24.2217L15.459 24.1807C17.2864 23.8335 19.156 23.2614 20.9834 22.71C23.7349 21.8931 24.1341 21.0967 28.5449 21.0967C32.9557 21.0967 34.0062 23.8946 34.2373 25.0996C34.6154 26.9989 32.9767 30.205 31.3594 31.5938C29.6791 33.0437 26.0669 34.5965 23.6514 34.5967C21.236 34.5967 19.4501 33.3713 18.6729 32.7178L13.4844 37.7617H0L0.0625 37.7412V19.627L0.483398 20.1162ZM39.9922 0V18.1152L39.5723 17.625C36.7787 14.3778 33.7539 12.8662 29.9941 12.8662C28.1877 12.8662 26.444 13.1928 24.7637 13.5195L24.5957 13.5605C22.7683 13.9077 20.8987 14.4798 19.0713 15.0312C16.3198 15.8481 15.9204 16.6448 11.5098 16.6445C7.09912 16.6445 6.04834 13.8467 5.81738 12.6416C5.43945 10.7422 7.07812 7.53613 8.69531 6.14746C10.3757 4.69727 13.9878 3.14453 16.4033 3.14453C18.8188 3.14453 20.6045 4.36963 21.3818 5.02344L26.5703 0H39.9922V0Z" fill="white"/></svg>
+      Stretch Engage · Migration Proposal · April 2026
+    </p>
+        <h1 class="cover-title">eMabler Connector<br><em>API v1 → v2</em></h1>
+        <p class="cover-sub">AppExchange Managed Package · Salesforce Apex · ECA Transition</p>
+        <nav class="cover-nav">
+          <a href="#scope">Scope</a>
+          <a href="#endpoints">Endpoints</a>
+          <a href="#breaking">Breaking changes</a>
+          <a href="#estimate">Estimate</a>
+          <a href="#timeline">Timeline</a>
+          <a href="#eca">ECA</a>
+          <a href="#approach">Approach</a>
+          <a href="#roadmap">Roadmap</a>
+        </nav>
+      </div>
+
+      <div class="cover-est-box">
+        <p class="cover-est-label">Recommended scope</p>
+        <p class="cover-est-big">200<span>k</span></p>
+        <p class="cover-est-range">Range: 145 000 – 255 000 NOK ex. MVA</p>
+        <div class="cover-est-rows">
+          <div class="cover-est-row"><span>Migration (all domains)</span><span>~115 000 NOK</span></div>
+          <div class="cover-est-row"><span>Bulkification refactor</span><span>~16 500 NOK</span></div>
+          <div class="cover-est-row"><span>QA &amp; AppExchange re-cert</span><span>~27 000 NOK</span></div>
+        </div>
+        <div class="cover-est-note">Rate: 1 500 NOK/h ex. MVA · fixed scope</div>
+      </div>
+    </div>
+
+    <div class="cover-summary">
+      <p class="cover-summary-lead">Every major domain has breaking changes. Authentication must be rebuilt from scratch — old keys are invalid for v2. The rename of <strong>"group" → "site"</strong> propagates across all objects, DTOs, and field mappings. This is not a minor version bump — it's a genuine rearchitecture.</p>
+      <div class="cover-summary-pills">
+        <div class="cover-pill"><span class="cover-pill-dot"></span><span><strong>13 breaking endpoints</strong> across charger, site, driver, tag, integration domains</span></div>
+        <div class="cover-pill"><span class="cover-pill-dot"></span><span><strong>5 remote actions</strong> change from HTTP GET to POST with JSON body</span></div>
+        <div class="cover-pill"><span class="cover-pill-dot"></span><span><strong>Pagination required</strong> on every list endpoint — structural change to sync architecture</span></div>
+        <div class="cover-pill"><span class="cover-pill-dot"></span><span><strong>ECA transition planning</strong> included — Salesforce retiring legacy Connected App UI Spring '26</span></div>
+        <div class="cover-pill cover-pill-pricing">
+          <div class="cover-pricing-row">
+            <div>
+              <span class="cover-pricing-label">Project · fixed scope</span>
+              <span class="cover-pricing-amount">200 000 NOK</span>
+              <span class="cover-pricing-sub">134h · ~12 weeks · ex. MVA · 1 500 NOK/h</span>
+            </div>
+            <div class="cover-pricing-divider">+</div>
+            <div>
+              <span class="cover-pricing-label">LCM retainer · ongoing</span>
+              <span class="cover-pricing-amount">15 000 NOK/mo</span>
+              <span class="cover-pricing-sub">10h/month · fixed · separate agreement · ex. MVA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><label>Prepared by</label><span>Stretch Engage</span></div>
+    <div class="cover-meta-item"><label>Date</label><span>April 2026</span></div>
+    <div class="cover-meta-item"><label>API versions</label><span>v1.1.1 → v2.0.1</span></div>
+    <div class="cover-meta-item"><label>Developer</label><span>Sidharrth + SME</span></div>
+    <div class="cover-meta-item"><label>Fixed scope</label><span>160 000 NOK</span></div>
+  </div>
+</div>
+
+<!-- ── STICKY NAV ──────────────────────────────────────────────────────────── -->
+<nav class="sticky-nav">
+  <a class="sticky-nav-logo" href="#top">
+    <svg width="18" height="17" viewBox="0 0 40 38" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.483398 20.1162C3.27689 23.3633 6.30095 24.8749 10.0605 24.875C11.8669 24.875 13.6107 24.5484 15.291 24.2217L15.459 24.1807C17.2864 23.8335 19.156 23.2614 20.9834 22.71C23.7349 21.8931 24.1341 21.0967 28.5449 21.0967C32.9557 21.0967 34.0062 23.8946 34.2373 25.0996C34.6154 26.9989 32.9767 30.205 31.3594 31.5938C29.6791 33.0437 26.0669 34.5965 23.6514 34.5967C21.236 34.5967 19.4501 33.3713 18.6729 32.7178L13.4844 37.7617H0L0.0625 37.7412V19.627L0.483398 20.1162ZM39.9922 0V18.1152L39.5723 17.625C36.7787 14.3778 33.7539 12.8662 29.9941 12.8662C28.1877 12.8662 26.444 13.1928 24.7637 13.5195L24.5957 13.5605C22.7683 13.9077 20.8987 14.4798 19.0713 15.0312C16.3198 15.8481 15.9204 16.6448 11.5098 16.6445C7.09912 16.6445 6.04834 13.8467 5.81738 12.6416C5.43945 10.7422 7.07812 7.53613 8.69531 6.14746C10.3757 4.69727 13.9878 3.14453 16.4033 3.14453C18.8188 3.14453 20.6045 4.36963 21.3818 5.02344L26.5703 0H39.9922V0Z" fill="#1a1a1a"/></svg>
+    <span>Stretch Engage</span>
+  </a>
+  <div class="sticky-nav-links">
+    <a href="#scope">Scope</a>
+    <a href="#endpoints">Endpoints</a>
+    <a href="#breaking">Breaking</a>
+    <a href="#estimate">Estimate</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#eca">ECA</a>
+    <a href="#approach">Approach</a>
+    <a href="#roadmap">Roadmap</a>
+  </div>
+  <span class="sticky-nav-title">eMabler API v2 Migration</span>
+</nav>
+
+<hr class="divider" style="margin: 0;">
+
+<!-- ── SCOPE ──────────────────────────────────────────────────────────────── -->
+<section id="scope" class="page">
+  <p class="section-label">01 — Scope</p>
+  <h2 class="section-title">What's in and out</h2>
+
+  <div class="scope-grid">
+    <div class="scope-card">
+      <span class="card-num">IN SCOPE 01</span>
+      <h4>API v2 Migration — All Touchpoints</h4>
+      <p>Trigger → Handler → AsyncProcessor → APIService chain for Charger, Driver, Site, Tag, Socket. Setup Wizard, Permission Manager, Remote Actions, Integration management.</p>
+    </div>
+    <div class="scope-card">
+      <span class="card-num">IN SCOPE 02</span>
+      <h4>Trigger Bulkification Refactor</h4>
+      <p>Current architecture processes records individually. Refactor to bulkified upsert pattern — a Salesforce governor limit risk and AppExchange review requirement.</p>
+    </div>
+    <div class="scope-card">
+      <span class="card-num">IN SCOPE 03</span>
+      <h4>ECA Transition Planning</h4>
+      <p>Scoping and experimentation for the Salesforce External Client Apps migration. Full package migration targeted as a separate 2027 release — no client impact in this scope.</p>
+    </div>
+    <div class="scope-card">
+      <span class="card-num">IN SCOPE 04</span>
+      <h4>AppExchange Re-certification</h4>
+      <p>Security Scanner re-run after auth changes. Regression testing across test and prod environments to meet AppExchange certification standards.</p>
+    </div>
+    <div class="scope-card out-scope">
+      <span class="card-num">OUT OF SCOPE</span>
+      <h4>Charger Consumptions / Events</h4>
+      <p>API exposed to eMabler for inbound push. No v2 changes required — confirmed out of scope in the proposal.</p>
+    </div>
+    <div class="scope-card out-scope">
+      <span class="card-num">OUT OF SCOPE</span>
+      <h4>Full ECA Package Migration</h4>
+      <p>Converting ConnectedApp metadata to ExternalClientApp format is a 2027 major release item. Only planning and experimentation in this scope.</p>
+    </div>
+    <div class="scope-card out-scope">
+      <span class="card-num">OUT OF SCOPE</span>
+      <h4>Client Org Data Migrations</h4>
+      <p>Any groupId → siteId field value migrations in existing client orgs are out of scope and must be handled per client.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" style="margin: 0;">
+
+<!-- ── ENDPOINT CHANGES ────────────────────────────────────────────────────── -->
+<section id="endpoints" class="page">
+  <p class="section-label">02 — Endpoint Changes</p>
+  <h2 class="section-title">V1 → V2 full reference</h2>
+  <p class="body-text">Every endpoint the connector calls, and what changed. <span class="badge badge-break">Breaking</span> = code change required. <span class="badge badge-change">Changed</span> = path or response code only. <span class="badge badge-new">New</span> = not in v1.</p>
+
+  <div class="ep-section">
+    <p class="ep-group-label">Authentication &amp; Base URL</p>
+    <table class="ep-table">
+      <thead><tr><th>Area</th><th>V1</th><th>V2</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Auth header</td><td class="del">apiKey + customerKey (two headers)</td><td class="add">x-api-key (single header)</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Test base URL</td><td class="del">emablerapi-test.azurewebsites.net/api</td><td class="add">api.emabler.net/api/v2/cpo</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Prod base URL</td><td class="del">api.emabler.net/api</td><td class="add">api.emabler.io/api/v2/cpo</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Key management</td><td>Managed by eMabler</td><td>Self-service via Connect → Developer</td><td><span class="badge badge-change">Changed</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ep-section">
+    <p class="ep-group-label">Charger</p>
+    <table class="ep-table">
+      <thead><tr><th>Operation</th><th>V1</th><th>V2</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Create</td><td class="del">POST /charger/add/{chargerId}/{groupId}</td><td class="add">POST /v2/chargers (body only)</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Update</td><td class="del">POST /charger/update/{chargerId}</td><td class="add">PATCH /v2/chargers/{chargerId}</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Delete</td><td>DELETE /charger/{chargerId} → 200</td><td>DELETE /v2/chargers/{chargerId} → 204</td><td><span class="badge badge-change">Changed</span></td></tr>
+        <tr><td>Get all</td><td class="del">GET /chargers (array, no pagination)</td><td class="add">GET /v2/chargers (paginated)</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Start charging</td><td class="del">GET /charger/startCharging/{id}/{socket}/{rfid}</td><td class="add">POST /v2/chargers/{id}/start-charging</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Stop charging</td><td class="del">GET /charger/stopCharging/{id}/{socket}</td><td class="add">POST /v2/chargers/{id}/stop-charging</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Reboot</td><td class="del">GET /charger/reboot/{id}/{type}</td><td class="add">POST /v2/chargers/{id}/reboot</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Unlock cable</td><td class="del">GET /charger/unlockCable/{id}/{socket}</td><td class="add">POST /v2/chargers/{id}/unlock-cable</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Refresh config</td><td class="del">GET /charger/refresh/config/{id}</td><td class="add">POST /v2/chargers/{id}/refresh-configuration</td><td><span class="badge badge-break">Breaking</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ep-section">
+    <p class="ep-group-label">Site (formerly Group)</p>
+    <table class="ep-table">
+      <thead><tr><th>Operation</th><th>V1</th><th>V2</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Concept rename</td><td class="del">group / groupId everywhere</td><td class="add">site / siteId everywhere</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Add site</td><td class="del">POST /group/add → 200 + id only</td><td class="add">POST /v2/sites → 201 + full object</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Update site</td><td class="del">PUT /group/{groupId}/update</td><td class="add">PATCH /v2/sites/{siteId}</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Delete site</td><td>DELETE /group/{groupId} → 200</td><td>DELETE /v2/sites/{siteId} → 204</td><td><span class="badge badge-change">Changed</span></td></tr>
+        <tr><td>Get site</td><td>GET /group/{groupId}</td><td>GET /v2/sites/{siteId}</td><td><span class="badge badge-change">Changed</span></td></tr>
+        <tr><td>Get all</td><td class="del">GET /groups (array)</td><td class="add">GET /v2/sites (paginated)</td><td><span class="badge badge-change">Changed</span></td></tr>
+        <tr><td>Add subsite</td><td class="del">POST /group/{parent}/subgroup/{child}</td><td class="add">POST /v2/sites/{parentId}/subsites (bulk body)</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Remove subsite</td><td>DELETE /group/{parent}/subgroup/{child}</td><td>DELETE /v2/sites/{parentId}/subsite/{childId}</td><td><span class="badge badge-change">Changed</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ep-section">
+    <p class="ep-group-label">Driver</p>
+    <table class="ep-table">
+      <thead><tr><th>Operation</th><th>V1</th><th>V2</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Add driver</td><td class="del">POST /authorise/user/add → 200 + id</td><td class="add">POST /v2/drivers → 201 + full object</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Update driver</td><td class="del">PUT /authorise/user/{id}/update</td><td class="add">PATCH /v2/drivers/{driverId}</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Delete driver</td><td class="del">DELETE /authorise/user/{id} → plain text</td><td class="add">DELETE /v2/drivers/{driverId} → 204</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Get driver</td><td class="del">GET /authorise/user/{externalId}</td><td class="add">GET /v2/drivers/{driverId}</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Add chargers</td><td>POST /authorise/user/{id}/chargers</td><td>POST /v2/drivers/{driverId}/chargers</td><td><span class="badge badge-change">Changed</span></td></tr>
+        <tr><td>Remove chargers/sites</td><td class="del">DELETE /authorise/user/{id}/chargersOrChargerGroups</td><td class="add">DELETE /v2/drivers/{driverId}/sites or /chargers</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Add sites to driver</td><td>—</td><td class="add">POST /v2/drivers/{driverId}/sites</td><td><span class="badge badge-new">New</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ep-section">
+    <p class="ep-group-label">Tag (RFID)</p>
+    <table class="ep-table">
+      <thead><tr><th>Operation</th><th>V1</th><th>V2</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Add tag</td><td class="del">POST /authorise/user/{userId}/add/tag</td><td class="add">POST /v2/tags (driverId in body)</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Update tag</td><td class="del">PUT /authorise/user/{userId}/tag/{idTag}/update</td><td class="add">PATCH /v2/tags/{tagId}</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Delete tag</td><td>DELETE /authorise/user/{userId}/tag/{idTag}</td><td>DELETE /v2/tags/{tagId}</td><td><span class="badge badge-change">Changed</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ep-section">
+    <p class="ep-group-label">Integration</p>
+    <table class="ep-table">
+      <thead><tr><th>Operation</th><th>V1</th><th>V2</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Get integrations</td><td class="del">GET /integrations (nested, no pagination)</td><td class="add">GET /v2/integrations (flat, paginated)</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Add integration</td><td class="del">POST /integration/{integrationType}/add</td><td class="add">POST /v2/integrations (type in body)</td><td><span class="badge badge-break">Breaking</span></td></tr>
+        <tr><td>Delete integration</td><td class="del">DELETE /integration/{type}/{id} → 200</td><td class="add">DELETE /v2/integrations/{id} → 204</td><td><span class="badge badge-break">Breaking</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ep-section">
+    <p class="ep-group-label">Transactions (new in v2)</p>
+    <table class="ep-table">
+      <thead><tr><th>Operation</th><th>V1</th><th>V2</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Get transactions</td><td>Not in v1</td><td class="add">POST /v2/transactions (filters in body, max 1000/page)</td><td><span class="badge badge-new">New</span></td></tr>
+        <tr><td>High rate-limit variant</td><td>—</td><td class="add">POST /v3/transactions (max 200/page)</td><td><span class="badge badge-new">New</span></td></tr>
+        <tr><td>Ongoing transactions</td><td>—</td><td class="add">GET /v2/ongoing-transactions</td><td><span class="badge badge-new">New</span></td></tr>
+        <tr><td>Transaction consumption</td><td>—</td><td class="add">GET /v2/transactions/{id}/consumption</td><td><span class="badge badge-new">New</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<hr class="divider" style="margin: 0;">
+
+<!-- ── BREAKING CHANGES DETAIL ────────────────────────────────────────────── -->
+<section id="breaking" class="page">
+  <p class="section-label">03 — Breaking Changes</p>
+  <h2 class="section-title">What needs rebuilding</h2>
+
+  <div class="detail-grid">
+    <div class="detail-card">
+      <h4>🔐 Authentication — all callouts</h4>
+      <p>V1 used a dual-key scheme (<code>apiKey</code> + <code>customerKey</code>). V2 requires a single <code>x-api-key</code> header. Old keys are <strong>not valid</strong> for v2 — new keys must be generated from eMabler Connect. The Named Credential and/or Custom Metadata storing auth config must be rebuilt from scratch.</p>
+    </div>
+    <div class="detail-card">
+      <h4>🏷️ group → site rename — all objects</h4>
+      <p>The concept of a "group" is now a "site" everywhere. Every Apex DTO class mapping <code>groupId</code>, <code>groupName</code>, <code>homeGroupId</code>, <code>parentGroupId</code> must be updated. Any Salesforce field mappings storing these values need a data migration plan for existing client orgs.</p>
+    </div>
+    <div class="detail-card">
+      <h4>⚡ Remote actions — GET → POST</h4>
+      <p>All five remote actions (Start, Stop, Reboot, Unlock Cable, Refresh Config) have changed from HTTP GET with parameters in the URL path to HTTP POST with a structured JSON body. Each callout's request construction must be rebuilt. Responses also change from plain text to structured JSON.</p>
+    </div>
+    <div class="detail-card">
+      <h4>📄 Response codes throughout</h4>
+      <p>V2 standardises on <code>201 Created</code> (not 200) for all create operations, and <code>204 No Content</code> (not 200 with plain text) for deletes. Response parsing logic must handle these codes and must not expect a response body on delete operations.</p>
+    </div>
+    <div class="detail-card">
+      <h4>📑 Pagination on all list endpoints</h4>
+      <p>V1 returned plain arrays. V2 wraps all list responses in a paginated envelope <code>{ page, limit, total, items: [...] }</code>. Every list callout must be updated to loop through pages until <code>page × limit ≥ total</code>. This is a structural change to the sync architecture, not just a field rename.</p>
+    </div>
+    <div class="detail-card">
+      <h4>👤 Driver path &amp; field changes</h4>
+      <p>Driver endpoints move from <code>/authorise/user/</code> to <code>/v2/drivers/</code>. The lookup key changes from <code>externalId</code> to <code>driverId</code>. Field <code>homeGroup</code> becomes <code>homeSiteId</code>. <code>integratedExternalIds</code> becomes <code>externalUserIds</code>. Responses expand from plain text / id-only to full structured objects.</p>
+    </div>
+  </div>
+
+  <!-- Open questions -->
+  <h3 class="sub-title">Open questions for eMabler</h3>
+  <p class="body-text" style="margin-bottom: 1rem;">These must be resolved before development begins:</p>
+  <ul class="questions-list">
+    <li><strong>Bulk driver query:</strong> Does <code>GET /v2/drivers</code> support querying multiple drivers in a single request? In Salesforce bulkified contexts, the connector may have 200 driver IDs to resolve simultaneously — individual round-trips would be prohibitive.</li>
+    <li><strong>Max chargers/sites per driver:</strong> What is the maximum number of chargers or sites assignable to a single driver? Determines whether the Permission Manager needs its own bulk handling strategy.</li>
+    <li><strong>Firmware &amp; Diagnostics:</strong> These endpoints were in v1 but are absent from the v2 Entity Management spec. Are they available in a v2 sub-package (e.g. Express API)?</li>
+    <li><strong>Payment Terminals &amp; Operators:</strong> Present in v1 but not found in the v2 spec. Are these discontinued or moved to another v2 sub-package?</li>
+  </ul>
+</section>
+
+<hr class="divider" style="margin: 0;">
+
+<!-- ── ESTIMATE ────────────────────────────────────────────────────────────── -->
+<section id="estimate" class="page">
+  <p class="section-label">04 — Effort Estimate</p>
+  <h2 class="section-title">Hours by work area</h2>
+  <p class="body-text">Based on analysis of v1.1.1 and v2.0.1 Swagger specs and the team's proposal document. Assumes one senior Salesforce developer. A one-day code audit would allow the estimate to be tightened by confirming which endpoints are actively used.</p>
+
+  <table class="est-table">
+    <thead>
+      <tr>
+        <th>Work area</th>
+        <th>Low</th>
+        <th>High</th>
+        <th>Median</th>
+        <th>Risk</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Auth &amp; base URL migration</td><td>5h</td><td>10h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">8h</td><td><span class="badge badge-high">High</span></td><td>Touches every callout; old keys invalid for v2</td></tr>
+      <tr style="background:var(--paper-dark)"><td>groupId → siteId rename + all DTO updates</td><td>8h</td><td>13h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">10h</td><td><span class="badge badge-high">High</span></td><td>Managed pkg field rename risk; affects all objects</td></tr>
+      <tr><td>Charger endpoints (9 operations)</td><td>13h</td><td>20h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">16h</td><td><span class="badge badge-med">Medium</span></td><td>Includes remote actions: GET→POST method changes</td></tr>
+      <tr style="background:var(--paper-dark)"><td>Site endpoints (8 operations)</td><td>10h</td><td>15h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">13h</td><td><span class="badge badge-med">Medium</span></td><td>New first-class entity, bulk subsite ops, field renames</td></tr>
+      <tr><td>Driver endpoints (7 operations)</td><td>10h</td><td>18h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">14h</td><td><span class="badge badge-med">Medium</span></td><td>homeGroup→homeSiteId, response expansion, new /sites assignment</td></tr>
+      <tr style="background:var(--paper-dark)"><td>Tag endpoints (3 operations)</td><td>5h</td><td>8h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">6h</td><td><span class="badge badge-low">Low</span></td><td>Simpler paths, PATCH semantics</td></tr>
+      <tr><td>Integration endpoints (3 operations)</td><td>5h</td><td>10h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">8h</td><td><span class="badge badge-med">Medium</span></td><td>Response structure change + pagination</td></tr>
+      <tr style="background:var(--paper-dark)"><td>Transactions (net new)</td><td>10h</td><td>18h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">14h</td><td><span class="badge badge-med">Medium</span></td><td>POST body pattern, pagination loop, new sub-endpoints</td></tr>
+      <tr><td>Bulkification refactor (triggers)</td><td>8h</td><td>15h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">11h</td><td><span class="badge badge-med">Medium</span></td><td>Named in proposal; governor limit risk if deferred</td></tr>
+      <tr style="background:var(--paper-dark)"><td>Permission Manager review</td><td>5h</td><td>10h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">8h</td><td><span class="badge badge-med">Medium</span></td><td>Bulk driver query question to eMabler unresolved</td></tr>
+      <tr><td>Regression testing &amp; QA</td><td>13h</td><td>23h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">18h</td><td><span class="badge badge-high">High</span></td><td>AppExchange bar; two environments required</td></tr>
+      <tr style="background:var(--paper-dark)"><td>AppExchange security review prep</td><td>5h</td><td>10h</td><td style="text-align:center;font-family:'DM Mono',monospace;font-weight:600">8h</td><td><span class="badge badge-med">Medium</span></td><td>Re-scan after auth changes; ECA transition scoping</td></tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>Total (billable incl. overhead)</td>
+        <td style="text-align:center;font-family:'DM Mono',monospace">95h</td>
+        <td style="text-align:center;font-family:'DM Mono',monospace">168h</td>
+        <td style="text-align:center;font-family:'DM Mono',monospace;font-size:1rem;color:#fff">134h</td>
+        <td></td>
+        <td style="color:rgba(245,242,238,0.75);font-size:0.82rem">Fixed scope: <strong style="color:#fff">200 000 NOK</strong> ex. MVA &nbsp;·&nbsp; Range: 160 000 – 240 000 NOK &nbsp;·&nbsp; 1 500 NOK/h &nbsp;·&nbsp; ±20%</td>
+      </tr>
+    </tfoot>
+  </table>
+</section>
+
+<hr class="divider" style="margin: 0;">
+
+<!-- ── TIMELINE ───────────────────────────────────────────────────────────── -->
+<section id="timeline" class="page">
+  <p class="section-label">05 — Delivery Timeline &amp; Cost</p>
+  <h2 class="section-title">Project plan · starting April 2026</h2>
+  <p class="body-text">2 days/week dedicated resource — 5.5 effective hours/day = <strong>11h/week</strong>. Fixed project scope of <strong>200 000 NOK ex. MVA</strong>, invoiced monthly as work progresses. The LCM retainer (15 000 NOK/mo) runs independently alongside.</p>
+
+  <div class="tl-card" style="max-width:720px">
+    <div class="tl-card-header">
+      <p class="tl-card-eyebrow fast">Project · 2 days/week · 1 dev + SME</p>
+      <h3>11h/week · ~12 weeks · Done mid-July 2026</h3>
+      <p class="tl-card-sub">Dedicated resource, 5.5 effective hours/day. SME available for reviews, decisions and eMabler liaison.</p>
+      <span class="tl-card-end fast">200 000 NOK fixed · ex. MVA · ±20% range: 160 000 – 240 000 NOK</span>
+    </div>
+
+    <div class="tl-months">
+      <div class="tl-month-row">
+        <span class="tl-month-label">Apr W1–W2</span>
+        <div class="tl-bar-wrap"><div class="tl-bar phase-audit" style="width:100%">Code audit · Auth &amp; base URL · eMabler open questions</div></div>
+        <span class="tl-month-hours">22h</span>
+      </div>
+      <div class="tl-month-row">
+        <span class="tl-month-label">Apr W3–W4</span>
+        <div class="tl-bar-wrap"><div class="tl-bar phase-1" style="width:100%">group→site rename + all DTOs · Charger endpoints</div></div>
+        <span class="tl-month-hours">22h</span>
+      </div>
+      <div class="tl-month-row">
+        <span class="tl-month-label">May W1–W2</span>
+        <div class="tl-bar-wrap"><div class="tl-bar phase-2" style="width:100%">Site endpoints · Driver endpoints · Remote actions</div></div>
+        <span class="tl-month-hours">22h</span>
+      </div>
+      <div class="tl-month-row">
+        <span class="tl-month-label">May W3–W4</span>
+        <div class="tl-bar-wrap"><div class="tl-bar phase-3" style="width:100%">Tags · Integrations · Transactions · Bulkification refactor</div></div>
+        <span class="tl-month-hours">22h</span>
+      </div>
+      <div class="tl-month-row">
+        <span class="tl-month-label">Jun W1–W2</span>
+        <div class="tl-bar-wrap"><div class="tl-bar phase-4" style="width:100%">Permission Manager · Full regression QA</div></div>
+        <span class="tl-month-hours">22h</span>
+      </div>
+      <div class="tl-month-row milestone">
+        <span class="tl-month-label">Jun W3–Jul</span>
+        <div class="tl-bar-wrap"><div class="tl-bar phase-done" style="width:60%">AppExchange security re-scan · Release</div></div>
+        <span class="tl-month-hours">24h</span>
+      </div>
+    </div>
+
+    <div class="tl-legend">
+      <div class="tl-legend-item"><span class="tl-legend-dot" style="background:#9a9a9a"></span>Audit &amp; Auth</div>
+      <div class="tl-legend-item"><span class="tl-legend-dot" style="background:#1a1a1a"></span>Core migration</div>
+      <div class="tl-legend-item"><span class="tl-legend-dot" style="background:#3a3a3a"></span>Site &amp; Driver</div>
+      <div class="tl-legend-item"><span class="tl-legend-dot" style="background:#5a5a5a"></span>Tags / Integrations</div>
+      <div class="tl-legend-item"><span class="tl-legend-dot" style="background:#7a7a7a"></span>QA &amp; Permissions</div>
+      <div class="tl-legend-item"><span class="tl-legend-dot" style="background:#1a1a1a"></span>Release</div>
+    </div>
+
+    <div class="cost-table-wrap">
+      <table class="cost-table">
+        <thead><tr><th>Month</th><th>Hours</th><th>Project cost (NOK)</th><th>Cumulative</th></tr></thead>
+        <tbody>
+          <tr><td>April 2026</td><td>44h</td><td>66 000</td><td>66 000</td></tr>
+          <tr><td>May 2026</td><td>44h</td><td>66 000</td><td>132 000</td></tr>
+          <tr><td>June – July 2026</td><td>46h</td><td>68 000</td><td>200 000</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td>Total</td><td>134h</td><td colspan="2">200 000 NOK ex. MVA</td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="tl-note">SME involvement (~10h) included in scope. LCM retainer (15 000 NOK/mo) is a separate ongoing agreement and is not included in the project cost above.</div>
+  </div>
+
+</section>
+
+<hr class="divider" style="margin: 0;">
+
+<!-- ── ECA ────────────────────────────────────────────────────────────────── -->
+<section id="eca" class="page">
+  <p class="section-label">06 — Salesforce Platform</p>
+  <h2 class="section-title">External Client Apps transition</h2>
+
+  <p class="body-text">Salesforce is retiring the ability to manually create legacy Connected Apps in the Setup UI from <strong>Spring '26</strong>. AppExchange Managed Packages are <strong>explicitly exempt</strong> — the connector continues to work for new and existing client installs. However, the team's dev workflow and long-term architecture need to adapt.</p>
+
+  <h3 class="sub-title">Legacy vs External Client App</h3>
+  <table class="eca-table">
+    <thead>
+      <tr><th>Feature</th><th>Legacy Connected App</th><th>External Client App (ECA)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Packaging</td><td>Single XML file</td><td>Modular: App + OAuth + Policy files</td></tr>
+      <tr><td>Distribution</td><td>Tied to publishing org</td><td>Global OAuth Settings — better portability</td></tr>
+      <tr><td>Security</td><td>Scopes defined at creation</td><td>Granular policies; admin enables post-install</td></tr>
+      <tr><td>UI creation</td><td style="color: var(--red);">Retired Spring '26 (manual UI only)</td><td style="color: var(--green);">Supported going forward</td></tr>
+      <tr><td>Managed package installs</td><td style="color: var(--green);">Exempt — safe for new installs</td><td>Target format for next major version</td></tr>
+      <tr><td>CI/CD deployment</td><td style="color: var(--green);">sf project deploy start still works</td><td>Supported via CLI</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Recommended roadmap</h3>
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-num">1</div>
+      <span class="phase-time">Now → Winter '26</span>
+      <h4>Secure the baseline</h4>
+      <p>Ensure all ConnectedApp configurations are in source control. Stop any manual Connected App creation in dev orgs. All dev environment setup must go through metadata deployment.</p>
+    </div>
+    <div class="phase">
+      <div class="phase-num">2</div>
+      <span class="phase-time">Mid 2026</span>
+      <h4>Experiment with ECA</h4>
+      <p>Use Salesforce CLI to convert existing Connected App metadata to ECA format in scratch orgs. Validate the callback flow. No client impact — experimental only.</p>
+    </div>
+    <div class="phase">
+      <div class="phase-num">3</div>
+      <span class="phase-time">2027 roadmap</span>
+      <h4>Release ECA package version</h4>
+      <p>Ship a package update including the ECA version alongside the legacy Connected App. Salesforce supports both during the transition — no downtime for existing client charger callbacks.</p>
+    </div>
+  </div>
+  <p class="body-text" style="color: var(--ink-light); font-size: 0.82rem;">Reference: Salesforce Knowledge Article 005228017 and ISV partner guidelines on the 2026 retirement of manual legacy app creation.</p>
+</section>
+
+<hr class="divider" style="margin: 0;">
+
+<!-- ── RECOMMENDED APPROACH ───────────────────────────────────────────────── -->
+<section id="approach" class="page">
+  <p class="section-label">07 — Recommended Approach</p>
+  <h2 class="section-title">How to execute the migration</h2>
+
+  <ol class="seq-list">
+    <li><span><strong>Code audit (1 day)</strong> — Walk the connector codebase and confirm which API endpoints are actively called. This de-risks the estimate, removes ambiguity, and is worth doing as a paid first step before committing to a fixed scope.</span></li>
+    <li><span><strong>Resolve open questions with eMabler</strong> — Particularly bulk driver querying and the location of Firmware/Diagnostics/PaymentTerminal endpoints in v2. These affect scope and architecture decisions.</span></li>
+    <li><span><strong>Auth and base URL migration first</strong> — Unblocks all subsequent testing against v2 endpoints. Must be done before anything else can be validated.</span></li>
+    <li><span><strong>Domain-by-domain migration</strong> — Site (including the group→site rename), Charger, Driver, Tag, Integration, Remote Actions. Each domain is independently testable and deployable.</span></li>
+    <li><span><strong>Bulkification refactor</strong> — Tackle during or immediately after domain migration while the code is open. Deferring to a separate sprint increases cost and risk.</span></li>
+    <li><span><strong>Regression testing and AppExchange security re-scan</strong> — Full regression across test and production environments before release submission. Allow time for re-review if auth changes trigger it.</span></li>
+  </ol>
+</section>
+
+<!-- ── ROADMAP ─────────────────────────────────────────────────────────────── -->
+<section id="roadmap" class="page">
+  <p class="section-label">08 — Future Roadmap</p>
+  <h2 class="section-title">Beyond v2 — what comes next</h2>
+
+  <div class="roadmap-intro">
+    <div class="roadmap-intro-badge">
+      <span>4</span>
+      <span>phases</span>
+    </div>
+    <p>The API v2 migration is the <strong>mandatory foundation</strong> for all future development. Nothing below should be started before v2 is live. Each phase builds on the previous — this is the recommended backlog order for LCM or follow-on projects.</p>
+  </div>
+
+  <div class="roadmap-phases">
+
+    <div class="roadmap-phase">
+      <div class="roadmap-phase-header">
+        <span class="roadmap-phase-num active">0</span>
+        <span class="roadmap-phase-label">This project · Now</span>
+        <span class="roadmap-phase-title">Foundation — API v2 Migration</span>
+      </div>
+      <div class="roadmap-items">
+        <div class="roadmap-item current">
+          <span class="roadmap-item-tag">Blocking</span>
+          Upgrade connector from API v1 → v2
+        </div>
+        <div class="roadmap-item current">
+          <span class="roadmap-item-tag">Blocking</span>
+          Bulkification refactor (trigger architecture)
+        </div>
+        <div class="roadmap-item current">
+          <span class="roadmap-item-tag">Minor fix</span>
+          Extend API callout timeout to 60s in ApiController (currently 10s — causing timeouts in production)
+        </div>
+        <div class="roadmap-item current">
+          <span class="roadmap-item-tag">Auth</span>
+          Migrate from Connected App → External Client App (ECA)
+        </div>
+        <div class="roadmap-item current">
+          <span class="roadmap-item-tag">Auth</span>
+          Post-install script to fix SetupEntityAccess permission linkage
+        </div>
+      </div>
+      <div class="roadmap-phase-time">200 000 NOK · ~134h · mid-2026</div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="roadmap-phase-header">
+        <span class="roadmap-phase-num">1</span>
+        <span class="roadmap-phase-label">Next · Mid 2026</span>
+        <span class="roadmap-phase-title">Agentforce Readiness</span>
+      </div>
+      <div class="roadmap-items">
+        <div class="roadmap-item highlight">
+          <span class="roadmap-item-tag">Agent Actions — MVP</span>
+          Expose 3 charger actions as Agentforce Agent Actions
+        </div>
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Action 1</span>
+          Unlock charging cable
+        </div>
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Action 2</span>
+          Start charging session
+        </div>
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Action 3</span>
+          Stop charging session
+        </div>
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Positioning</span>
+          Agentforce Ready branding on AppExchange
+        </div>
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Optional / strategic</span>
+          Expose same actions via MCP for non-Salesforce AI agents
+        </div>
+      </div>
+      <div class="roadmap-phase-time">Requires v2 complete · LCM or project</div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="roadmap-phase-header">
+        <span class="roadmap-phase-num">2</span>
+        <span class="roadmap-phase-label">Later · Late 2026</span>
+        <span class="roadmap-phase-title">Data Cloud Enablement</span>
+      </div>
+      <div class="roadmap-items">
+        <div class="roadmap-item highlight">
+          <span class="roadmap-item-tag">Recommended option</span>
+          Salesforce Data Model Mapping — lowest complexity
+        </div>
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Approach</span>
+          Predefined Data Cloud schema based on existing eMabler Salesforce objects
+        </div>
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Approach</span>
+          Salesforce-native ingestion — no Azure dependency
+        </div>
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Positioning</span>
+          Data Cloud Ready label on AppExchange
+        </div>
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Alt. option B</span>
+          External Data Connector — scheduled ingestion from eMabler Azure DB (not real-time)
+        </div>
+      </div>
+      <div class="roadmap-phase-time">Requires v2 + stable data model</div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="roadmap-phase-header">
+        <span class="roadmap-phase-num">3</span>
+        <span class="roadmap-phase-label">Future · 2027</span>
+        <span class="roadmap-phase-title">Loyalty Cloud</span>
+      </div>
+      <div class="roadmap-items">
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Deferred</span>
+          Only after Data Cloud is established
+        </div>
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Deferred</span>
+          Requires validated customer demand before investing
+        </div>
+        <div class="roadmap-item">
+          <span class="roadmap-item-tag">Deferred</span>
+          No scope or estimate at this stage
+        </div>
+      </div>
+      <div class="roadmap-phase-time">2027 · pending Data Cloud + demand</div>
+    </div>
+
+  </div>
+
+  <h3 class="sub-title" style="margin-top:2rem">Explicit non-goals</h3>
+  <div class="roadmap-nongrid">
+    <div class="roadmap-card deferred">
+      <h4>Custom conversational UI</h4>
+      <p>Building a bespoke chat or conversational interface is not the right investment. Expose actions that AI agents can invoke instead — Agentforce handles the conversation layer.</p>
+    </div>
+    <div class="roadmap-card deferred">
+      <h4>Real-time socket-level telemetry streaming</h4>
+      <p>Not in scope until the data model and Data Cloud foundation are established. Premature investment before v2 and Data Cloud creates tech debt.</p>
+    </div>
+    <div class="roadmap-card deferred">
+      <h4>Loyalty Cloud before Data Cloud</h4>
+      <p>Loyalty Cloud without a Data Cloud foundation has no analytics backbone. Defer until Phase 2 is complete and customer demand is validated.</p>
+    </div>
+    <div class="roadmap-card deferred">
+      <h4>Broad feature expansion before v2</h4>
+      <p>Any new functionality built on v1 increases migration complexity and technical debt. The v2 migration is a hard prerequisite for all new development.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────────────────────────────────── -->
+<footer class="footer">
+  <span style="display:flex;align-items:center;gap:0.6rem;">
+    <svg width="14" height="13" viewBox="0 0 40 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.5"><path d="M0.483398 20.1162C3.27689 23.3633 6.30095 24.8749 10.0605 24.875C11.8669 24.875 13.6107 24.5484 15.291 24.2217L15.459 24.1807C17.2864 23.8335 19.156 23.2614 20.9834 22.71C23.7349 21.8931 24.1341 21.0967 28.5449 21.0967C32.9557 21.0967 34.0062 23.8946 34.2373 25.0996C34.6154 26.9989 32.9767 30.205 31.3594 31.5938C29.6791 33.0437 26.0669 34.5965 23.6514 34.5967C21.236 34.5967 19.4501 33.3713 18.6729 32.7178L13.4844 37.7617H0L0.0625 37.7412V19.627L0.483398 20.1162ZM39.9922 0V18.1152L39.5723 17.625C36.7787 14.3778 33.7539 12.8662 29.9941 12.8662C28.1877 12.8662 26.444 13.1928 24.7637 13.5195L24.5957 13.5605C22.7683 13.9077 20.8987 14.4798 19.0713 15.0312C16.3198 15.8481 15.9204 16.6448 11.5098 16.6445C7.09912 16.6445 6.04834 13.8467 5.81738 12.6416C5.43945 10.7422 7.07812 7.53613 8.69531 6.14746C10.3757 4.69727 13.9878 3.14453 16.4033 3.14453C18.8188 3.14453 20.6045 4.36963 21.3818 5.02344L26.5703 0H39.9922V0Z" fill="white"/></svg>
+    <span>Stretch Engage AS</span>
+  </span>
+  <span style="font-family:'Playfair Display',serif;font-style:italic;font-weight:400;letter-spacing:0;text-transform:none;">eMabler API v1 → v2 Migration Proposal</span>
+  <a href="#top" style="color: rgba(255,255,255,0.35); text-decoration: none; font-size: 0.72rem;">↑ top</a>
+</footer>
+
+</body>
+</html>
