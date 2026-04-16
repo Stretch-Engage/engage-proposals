@@ -6,6 +6,45 @@
   <title>XaitPorter Connector – Solution Architecture Document</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#f2f2f2',
+        primaryTextColor: '#1a1a1a',
+        primaryBorderColor: '#1a1a1a',
+        lineColor: '#4a4a4a',
+        secondaryColor: '#ebebeb',
+        tertiaryColor: '#ffffff',
+        background: '#ffffff',
+        mainBkg: '#f2f2f2',
+        nodeBorder: '#1a1a1a',
+        clusterBkg: '#f9f9f9',
+        clusterBorder: '#e0e0e0',
+        titleColor: '#1a1a1a',
+        edgeLabelBackground: '#ffffff',
+        fontFamily: 'Lato, Helvetica, sans-serif',
+        fontSize: '13px',
+        actorBkg: '#1a1a1a',
+        actorTextColor: '#ffffff',
+        actorBorderColor: '#1a1a1a',
+        actorLineColor: '#e0e0e0',
+        signalColor: '#4a4a4a',
+        signalTextColor: '#1a1a1a',
+        labelBoxBkgColor: '#f2f2f2',
+        labelBoxBorderColor: '#e0e0e0',
+        labelTextColor: '#1a1a1a',
+        loopTextColor: '#1a1a1a',
+        noteBorderColor: '#e0e0e0',
+        noteBkgColor: '#ebebeb',
+        noteTextColor: '#1a1a1a',
+        activationBorderColor: '#1a1a1a',
+        activationBkgColor: '#ebebeb',
+      }
+    });
+  </script>
   <style>
     :root {
       --ink:        #1a1a1a;
@@ -212,11 +251,18 @@
     }
     .card {
       background: var(--paper-dark);
-      padding: 1.25rem 1.25rem;
+      padding: 1.5rem 1.5rem;
     }
-    .card .card-icon { font-size: 1.1rem; margin-bottom: .5rem; }
-    .card .card-title { font-weight: 700; font-size: .83rem; margin-bottom: .3rem; color: var(--ink); }
-    .card .card-desc  { font-size: .77rem; color: var(--ink-mid); line-height: 1.55; }
+    .card .card-eyebrow {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: .6rem;
+    }
+    .card .card-title { font-weight: 700; font-size: .88rem; margin-bottom: .4rem; color: var(--ink); }
+    .card .card-desc  { font-size: .8rem; color: var(--ink-mid); line-height: 1.6; }
 
     /* ── Tables ─────────────────────────────────── */
     .table-wrap { overflow-x: auto; margin: 1rem 0; }
@@ -356,6 +402,17 @@
       letter-spacing: .04em;
     }
 
+    /* ── Mermaid diagrams ───────────────────────── */
+    .mermaid {
+      background: var(--paper-dark);
+      border: 1px solid var(--rule);
+      padding: 1.5rem;
+      margin: 1rem 0 1.5rem;
+      overflow-x: auto;
+      text-align: center;
+    }
+    .mermaid svg { max-width: 100%; height: auto; }
+
     @media print {
       nav { display: none; }
       main { padding: 1.5rem; max-width: 100%; }
@@ -416,7 +473,7 @@
       <h1>XaitPorter Connector<br/>for Salesforce</h1>
       <p>A managed package that integrates Salesforce Accounts and Opportunities with the XaitPorter document collaboration platform via REST API and OAuth 2.0.</p>
       <div class="meta">
-        <div class="meta-item"><strong>Namespace</strong><span>xaitporter</span></div>
+        <div class="meta-item"><strong>Namespace</strong><span>xait_porter</span></div>
         <div class="meta-item"><strong>API Version</strong><span>66.0</span></div>
         <div class="meta-item"><strong>API Target</strong><span>XaitPorter REST v1</span></div>
         <div class="meta-item"><strong>Language Support</strong><span>EN / NO</span></div>
@@ -429,43 +486,43 @@
     <section id="executive-summary">
       <h2>Executive Summary</h2>
       <p>
-        The <strong>XaitPorter Connector</strong> is a Salesforce managed package (namespace: <code>xaitporter</code>)
+        The <strong>XaitPorter Connector</strong> is a Salesforce managed package (namespace: <code>xait_porter</code>)
         that bridges Salesforce CRM data with the <strong>XaitPorter</strong> document-collaboration and
         tender-management platform. It allows sales teams to initiate, link, and synchronise
         XaitPorter projects directly from Salesforce Account and Opportunity records, eliminating
         manual data re-entry and keeping both systems in sync.
       </p>
 
-      <div class="card-grid" style="margin-top:1.25rem;">
+      <div class="card-grid" style="margin-top:1.75rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
         <div class="card">
-          <div class="card-icon">🔗</div>
+          <div class="card-eyebrow">01</div>
           <div class="card-title">REST Integration</div>
-          <div class="card-desc">Outbound REST calls to XaitPorter API v1 over Named Credentials</div>
+          <div class="card-desc">Outbound REST calls to the XaitPorter API v1, managed through Salesforce Named Credentials. No credentials stored in code.</div>
         </div>
         <div class="card">
-          <div class="card-icon">🔐</div>
+          <div class="card-eyebrow">02</div>
           <div class="card-title">Per-User OAuth 2.0</div>
-          <div class="card-desc">Each Salesforce user authenticates independently via OpenID Connect</div>
+          <div class="card-desc">Each Salesforce user authenticates independently via OpenID Connect. No shared service account — tokens are stored per user.</div>
         </div>
         <div class="card">
-          <div class="card-icon">📄</div>
+          <div class="card-eyebrow">03</div>
           <div class="card-title">Project &amp; Template Sync</div>
-          <div class="card-desc">Creates and duplicates XaitPorter projects from Salesforce with field-mapped metadata</div>
+          <div class="card-desc">Creates and duplicates XaitPorter projects from Salesforce records, pre-populated with field-mapped metadata from the CRM.</div>
         </div>
         <div class="card">
-          <div class="card-icon">🗂️</div>
-          <div class="card-title">Configurable Mapping</div>
-          <div class="card-desc">Admins map any Salesforce field to XaitPorter metadata — with format control</div>
+          <div class="card-eyebrow">04</div>
+          <div class="card-title">Configurable Field Mapping</div>
+          <div class="card-desc">Admins define which Salesforce fields map to XaitPorter metadata fields, with control over date, boolean, and multiselect formats.</div>
         </div>
         <div class="card">
-          <div class="card-icon">🧩</div>
-          <div class="card-title">Lightning Ready</div>
-          <div class="card-desc">LWC-based record page components and Quick Actions on Account &amp; Opportunity</div>
+          <div class="card-eyebrow">05</div>
+          <div class="card-title">Lightning Native</div>
+          <div class="card-desc">LWC-based components and Quick Actions embedded directly on Account and Opportunity record pages. No page navigation required.</div>
         </div>
         <div class="card">
-          <div class="card-icon">🌐</div>
-          <div class="card-title">EN &amp; NO</div>
-          <div class="card-desc">Full label and object translation for English and Norwegian</div>
+          <div class="card-eyebrow">06</div>
+          <div class="card-title">EN &amp; NO Localisation</div>
+          <div class="card-desc">Full label and object translation for English and Norwegian, covering all custom objects, metadata types, and UI strings.</div>
         </div>
       </div>
     </section>
@@ -589,6 +646,35 @@
         Production deployments must update the Named Credential and Auth Provider to point to
         the production XaitPorter tenant URLs.
       </div>
+
+      <h3>Architecture overview</h3>
+      <div class="mermaid">
+flowchart LR
+    subgraph SFOrg ["Salesforce Org"]
+        direction TB
+        UI["LWC / Aura\nComponents"]
+        CTRL["Apex Controllers\nXaitCreateProject\nXaitSettings\nXaitTemplates"]
+        NC["Named Credential\nXaitPorter_REST_API\nOAuth · Per-User"]
+        AP["Auth Provider\nOpenID Connect"]
+        DB["Custom Objects\nXaitporterProject__c\nXaitporterTemplate__c\nField Mappings"]
+        UI --> CTRL
+        CTRL --> NC
+        CTRL --> DB
+        AP -.->|"access token"| NC
+    end
+
+    subgraph XaitPlatform ["XaitPorter Platform"]
+        direction TB
+        OAUTH["OAuth 2.0 Server\n/api/oauth2/token"]
+        RESTAPI["REST API v1\n/projects\n/users\n/projectroles"]
+    end
+
+    NC -->|"HTTPS + Bearer token"| RESTAPI
+    AP -.->|"OAuth flow"| OAUTH
+
+    style SFOrg fill:#f2f2f2,stroke:#e0e0e0,color:#1a1a1a
+    style XaitPlatform fill:#1a1a1a,stroke:#1a1a1a,color:#ffffff
+      </div>
     </section>
 
 
@@ -677,20 +763,42 @@
         </table>
       </div>
 
-      <h3>Relationship diagram (simplified)</h3>
-      <pre>
-Account / Opportunity
-    │
-    ├── XaitporterProject__c  (Primary__c — max 1 primary per parent)
-    │       └── XaitporterTemplate__c
-    │               ├── SFDC_Xaitporter_Field_Mapping__c  (many mappings per template)
-    │               └── XaitporterTemplateFilter__c        (many filters per template)
-    │
-    └── (Quick Action → Lightning Component → API call to XaitPorter)
+      <h3>Object relationship diagram</h3>
+      <div class="mermaid">
+erDiagram
+    Account ||--o{ XaitporterProject__c : "has projects"
+    Opportunity ||--o{ XaitporterProject__c : "has projects"
+    XaitporterProject__c }o--|| XaitporterTemplate__c : "created from"
+    XaitporterTemplate__c ||--o{ SFDC_Xaitporter_Field_Mapping__c : "has mappings"
+    XaitporterTemplate__c ||--o{ XaitporterTemplateFilter__c : "has filters"
 
-XaitPorter_Setting__mdt          (1 default record — global config)
-XaitPorter_ProjectRole_Mapping__mdt  (1 record per XaitPorter role)
-XaitPorter_Debug__c              (error/debug log)</pre>
+    XaitporterProject__c {
+        string Project_ID__c "XaitPorter project ID"
+        url Project_URL__c "Deep link to XaitPorter"
+        boolean Primary__c "Max 1 primary per parent"
+        id ParentId__c "Account or Opportunity"
+    }
+    XaitporterTemplate__c {
+        string Template_ID__c "XaitPorter template ID"
+        string Label__c "Display name"
+        string Object_Context__c "Account or Opportunity"
+    }
+    SFDC_Xaitporter_Field_Mapping__c {
+        string Source_Object__c "e.g. Opportunity"
+        string Source_Field__c "e.g. Amount"
+        string Target_Metadata_Key__c "XaitPorter field key"
+    }
+    XaitporterTemplateFilter__c {
+        string Filter_Field__c "Salesforce field"
+        string Operator__c "equals / contains"
+        string Value__c "Filter value"
+    }
+    XaitPorter_Debug__c {
+        string Message__c "Error detail"
+        string Context__c "Operation context"
+        datetime Timestamp__c
+    }
+      </div>
     </section>
 
 
@@ -1164,6 +1272,42 @@ Timeout          : 120 seconds</pre>
       <h2>Project Creation Flow</h2>
       <p>End-to-end walkthrough of a user creating a XaitPorter project from an Opportunity record:</p>
 
+      <div class="mermaid">
+sequenceDiagram
+    actor User
+    participant LWC as Lightning Component
+    participant CTRL as XaitCreateProject<br/>Controller
+    participant SVC as XPAPI_Service
+    participant NC as Named Credential
+    participant XP as XaitPorter REST API
+    participant SFDB as Salesforce DB
+
+    User->>LWC: Click "Create XaitPorter Project"
+    LWC->>CTRL: fetchTemplateData()
+    CTRL->>SFDB: Query XaitporterTemplate__c + Filters
+    SFDB-->>CTRL: Filtered template list
+    CTRL-->>LWC: Return templates
+    User->>LWC: Select template
+    LWC->>CTRL: loadTemplateMetadata()
+    CTRL->>SFDB: Query field mappings + source fields
+    SFDB-->>CTRL: Mapped Salesforce values
+    CTRL->>SVC: projectsPost(templateId, metadata)
+    SVC->>NC: HTTP POST /projects
+    NC->>XP: POST /projects (Bearer token)
+    XP-->>NC: 201 {project_id, project_url}
+    NC-->>SVC: Response
+    SVC->>NC: HTTP PATCH /projects/:id/metadata
+    NC->>XP: PATCH metadata (field values)
+    XP-->>NC: 200 OK
+    NC-->>SVC: Response
+    SVC-->>CTRL: Project created
+    CTRL->>SFDB: Insert XaitporterProject__c
+    SFDB-->>CTRL: Record saved
+    CTRL-->>LWC: Success
+    LWC-->>User: Project linked ✓
+      </div>
+
+      <h3>Step-by-step detail</h3>
       <div class="flow">
         <div class="flow-step"><strong>1. Entry point</strong> — User clicks "Create XaitPorter Project" Quick Action on Opportunity record</div>
         <div class="flow-arrow">↓</div>
