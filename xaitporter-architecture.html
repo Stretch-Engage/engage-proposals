@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XaitPorter Connector – Solution Architecture Document</title>
+  <style>
+    :root {
+      --brand:       #0070d2;
+      --brand-dark:  #005fb2;
+      --accent:      #f4a261;
+      --bg:          #f9fafb;
+      --surface:     #ffffff;
+      --border:      #e1e4e8;
+      --text:        #1a1a2e;
+      --muted:       #6b7280;
+      --code-bg:     #f3f4f6;
+      --danger:      #dc2626;
+      --warning:     #d97706;
+      --ok:          #16a34a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ── Layout ────────────────────────────────── */
+    .layout { display: flex; min-height: 100vh; }
+
+    nav {
+      width: 260px;
+      min-width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 2rem 1.25rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    nav .logo {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 1.5rem;
+      display: block;
+      letter-spacing: -.3px;
+    }
+
+    nav ul { list-style: none; }
+    nav ul li { margin: 0; }
+
+    nav ul li a {
+      display: block;
+      padding: .35rem .6rem;
+      border-radius: 5px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .82rem;
+      transition: background .15s, color .15s;
+    }
+    nav ul li a:hover { background: var(--bg); color: var(--brand); }
+
+    nav ul li.section-header {
+      margin-top: 1rem;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: .2rem .6rem;
+    }
+
+    main {
+      flex: 1;
+      padding: 3rem 3.5rem;
+      max-width: 1000px;
+    }
+
+    /* ── Cover ─────────────────────────────────── */
+    .cover {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+      border-radius: 12px;
+      padding: 3rem;
+      color: #fff;
+      margin-bottom: 3rem;
+    }
+    .cover .tag {
+      display: inline-block;
+      background: rgba(255,255,255,.2);
+      border-radius: 100px;
+      padding: .25rem .8rem;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      margin-bottom: 1rem;
+    }
+    .cover h1 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: .5rem; }
+    .cover p  { opacity: .85; font-size: .95rem; max-width: 600px; margin-top: .5rem; }
+    .cover .meta {
+      display: flex; gap: 2rem; margin-top: 1.5rem;
+      font-size: .8rem; opacity: .75;
+    }
+    .cover .meta span strong { display: block; font-size: .7rem; opacity: .7; text-transform: uppercase; letter-spacing: .05em; }
+
+    /* ── Sections ───────────────────────────────── */
+    section { margin-bottom: 3.5rem; scroll-margin-top: 1.5rem; }
+    section h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      border-bottom: 2px solid var(--brand);
+      padding-bottom: .4rem;
+      margin-bottom: 1.25rem;
+      color: var(--brand-dark);
+    }
+    section h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 1.5rem 0 .5rem;
+      color: var(--text);
+    }
+    section h4 {
+      font-size: .92rem;
+      font-weight: 700;
+      margin: 1rem 0 .3rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    p { margin-bottom: .75rem; }
+
+    /* ── Cards ──────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+    }
+    .card .card-icon { font-size: 1.4rem; margin-bottom: .4rem; }
+    .card .card-title { font-weight: 700; font-size: .85rem; margin-bottom: .25rem; }
+    .card .card-desc  { font-size: .78rem; color: var(--muted); }
+
+    /* ── Tables ─────────────────────────────────── */
+    .table-wrap { overflow-x: auto; margin: 1rem 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .84rem;
+      background: var(--surface);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    thead tr { background: var(--brand); color: #fff; }
+    thead th { padding: .65rem 1rem; text-align: left; font-weight: 600; font-size: .8rem; }
+    tbody tr:nth-child(even) { background: var(--bg); }
+    tbody td { padding: .6rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+
+    /* ── Code ───────────────────────────────────── */
+    code {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: .1rem .35rem;
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: .8rem;
+    }
+    pre {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .8rem;
+      line-height: 1.6;
+      margin: .75rem 0 1rem;
+    }
+    pre .comment { color: #6c7086; }
+    pre .keyword { color: #cba6f7; }
+    pre .string  { color: #a6e3a1; }
+    pre .url     { color: #89dceb; }
+
+    /* ── Callouts ───────────────────────────────── */
+    .callout {
+      border-left: 4px solid var(--brand);
+      background: var(--surface);
+      border-radius: 0 8px 8px 0;
+      padding: .85rem 1.1rem;
+      margin: 1rem 0;
+      font-size: .88rem;
+    }
+    .callout.warn  { border-color: var(--warning); background: #fffbeb; }
+    .callout.danger{ border-color: var(--danger);  background: #fef2f2; }
+    .callout.ok    { border-color: var(--ok);      background: #f0fdf4; }
+    .callout strong { display: block; margin-bottom: .25rem; }
+
+    /* ── Badges ─────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      border-radius: 100px;
+      padding: .15rem .6rem;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+    .badge-blue   { background: #dbeafe; color: #1d4ed8; }
+    .badge-green  { background: #dcfce7; color: #15803d; }
+    .badge-orange { background: #ffedd5; color: #c2410c; }
+    .badge-red    { background: #fee2e2; color: #b91c1c; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+
+    /* ── Flow diagram ───────────────────────────── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 1rem 0;
+      max-width: 560px;
+    }
+    .flow-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .75rem 1.1rem;
+      font-size: .85rem;
+    }
+    .flow-step strong { color: var(--brand); }
+    .flow-arrow {
+      text-align: center;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.2;
+      padding: .15rem 0;
+    }
+
+    /* ── Component inventory ────────────────────── */
+    .component-list { display: flex; flex-direction: column; gap: .5rem; }
+    .component-item {
+      display: flex; align-items: flex-start; gap: .75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .75rem 1rem;
+      font-size: .84rem;
+    }
+    .component-item .ci-type {
+      min-width: 130px;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--muted);
+      padding-top: .1rem;
+    }
+    .component-item .ci-name { font-weight: 700; margin-bottom: .1rem; }
+    .component-item .ci-desc { color: var(--muted); font-size: .8rem; }
+
+    @media print {
+      nav { display: none; }
+      main { padding: 1.5rem; max-width: 100%; }
+      .cover { background: var(--brand) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      pre { white-space: pre-wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── Sidebar navigation ── -->
+  <nav>
+    <span class="logo">XaitPorter Connector</span>
+    <ul>
+      <li class="section-header">Overview</li>
+      <li><a href="#executive-summary">Executive Summary</a></li>
+      <li><a href="#functional-overview">Functional Overview</a></li>
+
+      <li class="section-header">Architecture</li>
+      <li><a href="#system-context">System Context</a></li>
+      <li><a href="#data-model">Data Model</a></li>
+      <li><a href="#authentication">Authentication &amp; Security</a></li>
+      <li><a href="#api-integration">API Integration</a></li>
+
+      <li class="section-header">Component Inventory</li>
+      <li><a href="#apex-classes">Apex Classes</a></li>
+      <li><a href="#triggers">Triggers</a></li>
+      <li><a href="#lwc-aura">LWC / Aura Components</a></li>
+      <li><a href="#flows">Flows</a></li>
+      <li><a href="#metadata-config">Metadata &amp; Config</a></li>
+
+      <li class="section-header">Key Flows</li>
+      <li><a href="#project-creation-flow">Project Creation Flow</a></li>
+      <li><a href="#auth-flow">Authentication Flow</a></li>
+      <li><a href="#field-mapping">Field Mapping &amp; Sync</a></li>
+
+      <li class="section-header">Security Review</li>
+      <li><a href="#security-posture">Security Posture</a></li>
+      <li><a href="#permissions">Permissions Model</a></li>
+      <li><a href="#callouts">External Callouts</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Main content ── -->
+  <main>
+
+    <!-- Cover -->
+    <div class="cover">
+      <span class="tag">Solution Architecture Document</span>
+      <h1>XaitPorter Connector<br/>for Salesforce</h1>
+      <p>A managed package that integrates Salesforce Accounts and Opportunities with the XaitPorter document collaboration platform via REST API and OAuth 2.0.</p>
+      <div class="meta">
+        <div><strong>Namespace</strong>xaitporter</div>
+        <div><strong>API Version</strong>66.0</div>
+        <div><strong>API Target</strong>XaitPorter REST v1</div>
+        <div><strong>Language Support</strong>EN / NO</div>
+        <div><strong>Document Date</strong>April 2026</div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="executive-summary">
+      <h2>Executive Summary</h2>
+      <p>
+        The <strong>XaitPorter Connector</strong> is a Salesforce managed package (namespace: <code>xaitporter</code>)
+        that bridges Salesforce CRM data with the <strong>XaitPorter</strong> document-collaboration and
+        tender-management platform. It allows sales teams to initiate, link, and synchronise
+        XaitPorter projects directly from Salesforce Account and Opportunity records, eliminating
+        manual data re-entry and keeping both systems in sync.
+      </p>
+
+      <div class="card-grid" style="margin-top:1.25rem;">
+        <div class="card">
+          <div class="card-icon">🔗</div>
+          <div class="card-title">REST Integration</div>
+          <div class="card-desc">Outbound REST calls to XaitPorter API v1 over Named Credentials</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔐</div>
+          <div class="card-title">Per-User OAuth 2.0</div>
+          <div class="card-desc">Each Salesforce user authenticates independently via OpenID Connect</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📄</div>
+          <div class="card-title">Project &amp; Template Sync</div>
+          <div class="card-desc">Creates and duplicates XaitPorter projects from Salesforce with field-mapped metadata</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🗂️</div>
+          <div class="card-title">Configurable Mapping</div>
+          <div class="card-desc">Admins map any Salesforce field to XaitPorter metadata — with format control</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🧩</div>
+          <div class="card-title">Lightning Ready</div>
+          <div class="card-desc">LWC-based record page components and Quick Actions on Account &amp; Opportunity</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌐</div>
+          <div class="card-title">EN &amp; NO</div>
+          <div class="card-desc">Full label and object translation for English and Norwegian</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="functional-overview">
+      <h2>Functional Overview</h2>
+
+      <h3>What the connector does</h3>
+      <p>
+        When a salesperson is working on a Salesforce <strong>Account</strong> or
+        <strong>Opportunity</strong>, they can use the connector to:
+      </p>
+      <ol style="padding-left:1.5rem; margin-bottom:.75rem;">
+        <li style="margin-bottom:.4rem;">Browse available <strong>XaitPorter project templates</strong> relevant to that record.</li>
+        <li style="margin-bottom:.4rem;"><strong>Duplicate a template</strong> to create a new XaitPorter project, pre-populated with Salesforce data.</li>
+        <li style="margin-bottom:.4rem;">Have the new project <strong>linked back</strong> to the Salesforce record as a child <code>XaitporterProject__c</code> object.</li>
+        <li style="margin-bottom:.4rem;"><strong>Update project metadata</strong> in XaitPorter when Salesforce record data changes (manually or via Flow).</li>
+        <li style="margin-bottom:.4rem;">Open the project URL directly in XaitPorter from the Salesforce UI.</li>
+      </ol>
+      <p>
+        Administrators configure <strong>which Salesforce fields map to which XaitPorter metadata fields</strong>,
+        what format dates, booleans, and multiselect values use, and which XaitPorter project roles
+        map to which Salesforce roles.
+      </p>
+
+      <h3>Primary use cases</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Use Case</th><th>Actor</th><th>Entry Point</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Create a new XaitPorter project from an Opportunity</td>
+              <td>Sales rep</td>
+              <td>Quick Action / Lightning component on Opportunity record</td>
+            </tr>
+            <tr>
+              <td>Create a new XaitPorter project from an Account</td>
+              <td>Sales rep</td>
+              <td>Quick Action / Lightning component on Account record</td>
+            </tr>
+            <tr>
+              <td>Sync Salesforce field changes to XaitPorter metadata</td>
+              <td>Automated (Flow)</td>
+              <td>Flow invocable action on Account/Opportunity change</td>
+            </tr>
+            <tr>
+              <td>Manage templates and field mappings</td>
+              <td>XaitPorter Admin</td>
+              <td>Admin settings Lightning component</td>
+            </tr>
+            <tr>
+              <td>Assign users and manage authentication</td>
+              <td>Salesforce Admin</td>
+              <td>App Setup controller &amp; permission assignment UI</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="system-context">
+      <h2>System Context</h2>
+
+      <h3>Systems involved</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>System</th><th>Role</th><th>Protocol</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Salesforce CRM</strong></td>
+              <td>Source of truth for accounts, opportunities, contacts, users</td>
+              <td>Internal</td>
+            </tr>
+            <tr>
+              <td><strong>XaitPorter Platform</strong></td>
+              <td>Document collaboration &amp; tender management system</td>
+              <td>REST API v1 (HTTPS)</td>
+            </tr>
+            <tr>
+              <td><strong>XaitPorter OAuth 2.0 Server</strong></td>
+              <td>Issues access tokens for per-user authentication</td>
+              <td>OpenID Connect / OAuth 2.0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Integration endpoints</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Purpose</th><th>URL</th><th>Direction</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>XaitPorter REST API</td>
+              <td><code>https://salesforce.lab.xait.no/api/1/</code></td>
+              <td>Salesforce → XaitPorter</td>
+            </tr>
+            <tr>
+              <td>OAuth 2.0 Authorization</td>
+              <td><code>https://salesforce-test.xaitporter.com/api/oauth2/authorize</code></td>
+              <td>Browser redirect</td>
+            </tr>
+            <tr>
+              <td>OAuth 2.0 Token</td>
+              <td><code>https://salesforce-test.xaitporter.com/api/oauth2/token</code></td>
+              <td>Salesforce → XaitPorter</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn">
+        <strong>⚠️ Note on endpoints</strong>
+        The endpoints above reflect the current development/test environment (<code>salesforce-test.xaitporter.com</code>, <code>salesforce.lab.xait.no</code>).
+        Production deployments must update the Named Credential and Auth Provider to point to
+        the production XaitPorter tenant URLs.
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="data-model">
+      <h2>Data Model</h2>
+
+      <h3>Custom Objects</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Object API Name</th><th>Purpose</th><th>Key Fields</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>XaitporterProject__c</code></td>
+              <td>Represents a linked XaitPorter project on a Salesforce record</td>
+              <td>
+                <code>Project_ID__c</code> — XaitPorter project ID<br/>
+                <code>Project_URL__c</code> — Deep link into XaitPorter<br/>
+                <code>Primary__c</code> — Boolean, only one primary per parent<br/>
+                <code>ParentId__c</code> — Lookup to Account or Opportunity<br/>
+                Lookup to <code>XaitporterTemplate__c</code>
+              </td>
+            </tr>
+            <tr>
+              <td><code>XaitporterTemplate__c</code></td>
+              <td>Stores a reference to a XaitPorter project template</td>
+              <td>
+                Template ID from XaitPorter API<br/>
+                Label / display name<br/>
+                Object context (Account / Opportunity)
+              </td>
+            </tr>
+            <tr>
+              <td><code>XaitporterTemplateFilter__c</code></td>
+              <td>Filters that control which templates appear for a given record</td>
+              <td>Filter field, operator, value — supports boolean and picklist filtering</td>
+            </tr>
+            <tr>
+              <td><code>SFDC_Xaitporter_Field_Mapping__c</code></td>
+              <td>Maps a Salesforce field to a XaitPorter metadata field</td>
+              <td>
+                Source object &amp; field<br/>
+                Target XaitPorter metadata field key<br/>
+                Lookup to <code>XaitporterTemplate__c</code>
+              </td>
+            </tr>
+            <tr>
+              <td><code>XaitPorter_Debug__c</code></td>
+              <td>Debug log records for API errors and diagnostics</td>
+              <td>Error message, context, timestamp</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Custom Metadata Types</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Metadata Type</th><th>Purpose</th><th>Key Fields</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>XaitPorter_Setting__mdt</code></td>
+              <td>Global connector configuration (one record: Default)</td>
+              <td>
+                <code>Date_Format__c</code> — ISO / UK / USA / Norway / International<br/>
+                <code>Boolean_Format__c</code> — Yes/No, True/False, 1/0<br/>
+                <code>Multiselect_Format__c</code> — Comma or Line-break separated<br/>
+                <code>API_User_Id__c</code> — Default XaitPorter user ID<br/>
+                <code>API_User_Role__c</code> — Default role name<br/>
+                <code>Enable_Debugging__c</code> — Toggle debug logging
+              </td>
+            </tr>
+            <tr>
+              <td><code>XaitPorter_ProjectRole_Mapping__mdt</code></td>
+              <td>Maps XaitPorter project roles to Salesforce user roles (one record per role)</td>
+              <td>
+                <code>Project_Role_Id__c</code> — XaitPorter numeric role ID<br/>
+                Record names: Reader, Regular_Contributor, Privileged_Contributor, Restricted_Contributor, Project_Coordinator
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Relationship diagram (simplified)</h3>
+      <pre>
+Account / Opportunity
+    │
+    ├── XaitporterProject__c  (Primary__c — max 1 primary per parent)
+    │       └── XaitporterTemplate__c
+    │               ├── SFDC_Xaitporter_Field_Mapping__c  (many mappings per template)
+    │               └── XaitporterTemplateFilter__c        (many filters per template)
+    │
+    └── (Quick Action → Lightning Component → API call to XaitPorter)
+
+XaitPorter_Setting__mdt          (1 default record — global config)
+XaitPorter_ProjectRole_Mapping__mdt  (1 record per XaitPorter role)
+XaitPorter_Debug__c              (error/debug log)</pre>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="authentication">
+      <h2>Authentication &amp; Security</h2>
+
+      <h3>Authentication model</h3>
+      <p>
+        The connector uses <strong>per-user OAuth 2.0</strong> (OpenID Connect) via Salesforce
+        Named Credentials and External Credentials. Every Salesforce user who interacts
+        with XaitPorter must independently authorise the connection — there is no shared
+        service account for API calls.
+      </p>
+
+      <h3>Authentication components</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Component</th><th>Type</th><th>Role</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>XaitPorter_REST_API</code></td>
+              <td>Named Credential</td>
+              <td>
+                Holds the API base URL and per-user OAuth tokens.
+                Protocol: OAuth, Principal: PerUser.
+                Referenced by <code>XPAPI_Client</code> for all REST callouts.
+              </td>
+            </tr>
+            <tr>
+              <td><code>Auth_API_Ext</code></td>
+              <td>External Credential</td>
+              <td>
+                Manages per-user OAuth principals.
+                Linked to <code>xaitPorterTest1</code> Auth Provider.
+                Used for <code>ExternalDataUserAuth</code> checks in setup flow.
+              </td>
+            </tr>
+            <tr>
+              <td><code>xaitAuthProvider</code></td>
+              <td>Auth Provider (OpenID Connect)</td>
+              <td>
+                Primary auth provider. Authorization and token endpoints at
+                <code>salesforce-test.xaitporter.com</code>.
+                Consumer Key: "Spreadsheet Tool". Sends access token in header.
+                PKCE: disabled. MFA: not required.
+              </td>
+            </tr>
+            <tr>
+              <td><code>xaitPorterTest</code> / <code>xaitPorterTest1</code></td>
+              <td>Auth Provider</td>
+              <td>Additional auth provider configurations for test environments.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Per-user authentication flow</h3>
+      <div class="flow">
+        <div class="flow-step"><strong>1.</strong> User opens XaitPorter component on a record page</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>2.</strong> <code>XaitSettingsCmpController.getSettingData()</code> checks <code>ExternalDataUserAuth</code> for this user</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>3.</strong> If not authenticated → <code>initiateBrowserAuthFlow()</code> redirects to <code>xaitAuthProvider</code> authorize URL</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>4.</strong> User logs in to XaitPorter → OAuth token returned and stored against the Named Credential (per-user principal)</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>5.</strong> All subsequent API calls use the Named Credential — Salesforce automatically injects the Bearer token</div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="api-integration">
+      <h2>API Integration</h2>
+
+      <h3>HTTP client stack</h3>
+      <p>All outbound calls go through a two-class client stack:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Class</th><th>Responsibility</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>XPAPI_Service</code></td>
+              <td>Business-level API methods — one method per endpoint. Builds request, sets params, calls <code>XPAPI_Client</code>.</td>
+            </tr>
+            <tr>
+              <td><code>XPAPI_Client</code></td>
+              <td>HTTP transport layer. Sets Named Credential, headers, 120s timeout. Parses <code>XPExceptionResponse</code> on error.</td>
+            </tr>
+            <tr>
+              <td><code>XPAPI_Utility</code></td>
+              <td>Shared utilities: <code>Param</code>, <code>Authentication</code> interface, <code>ApiKeyHeaderAuth</code>, <code>ApiException</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>API endpoints called</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Endpoint</th><th>Called by</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-blue">GET</span></td>
+              <td><code>/me</code></td>
+              <td><code>XaitSettingsCmpController</code></td>
+              <td>Test API connection, retrieve current user info</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-blue">GET</span></td>
+              <td><code>/projectroles</code></td>
+              <td><code>XaitSettingsCmpController</code></td>
+              <td>Fetch available project roles for role mapping setup</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-blue">GET</span></td>
+              <td><code>/projects?filter[is_template]=true</code></td>
+              <td><code>XaitTemplatesCmpController</code></td>
+              <td>Fetch all XaitPorter project templates</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-blue">GET</span></td>
+              <td><code>/projects</code></td>
+              <td><code>XaitCreateProjectWithTemplateController</code></td>
+              <td>Browse and fetch existing projects</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">POST</span></td>
+              <td><code>/projects</code></td>
+              <td><code>XaitCreateProjectWithTemplateController</code></td>
+              <td>Duplicate a template → create new project in XaitPorter</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-orange">PATCH</span></td>
+              <td><code>/projects/:id/metadata</code></td>
+              <td><code>XaitCreateProjectWithTemplateController</code></td>
+              <td>Push Salesforce field values to XaitPorter project metadata</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-blue">GET</span></td>
+              <td><code>/users</code></td>
+              <td><code>XaitCreateProjectWithTemplateController</code></td>
+              <td>Resolve Salesforce user email to XaitPorter user ID</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Callout configuration</h3>
+      <pre>
+Named Credential : XaitPorter_REST_API
+Base URL         : https://salesforce.lab.xait.no/api/1/
+Auth Type        : OAuth 2.0 (per-user principal)
+Content-Type     : application/json
+Accept           : application/json
+Timeout          : 120 seconds</pre>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="apex-classes">
+      <h2>Apex Classes</h2>
+      <div class="component-list">
+
+        <div class="component-item">
+          <div class="ci-type">Controller</div>
+          <div>
+            <div class="ci-name">XaitCreateProjectWithTemplateController <span class="badge badge-blue">global with sharing</span></div>
+            <div class="ci-desc">
+              Core project creation controller. Fetches templates, loads field mappings, calls the XaitPorter API to duplicate a project, and writes the resulting <code>XaitporterProject__c</code> record.
+              Exposes an <code>@InvocableMethod</code> (<code>updateProjectInvocable</code>) for Flow integration.
+              Handles date/datetime/boolean/multiselect formatting per the configured custom metadata.
+            </div>
+          </div>
+        </div>
+
+        <div class="component-item">
+          <div class="ci-type">Controller</div>
+          <div>
+            <div class="ci-name">XaitSettingsCmpController</div>
+            <div class="ci-desc">
+              Admin settings controller. Tests API connectivity (<code>/me</code>), fetches and syncs project roles (<code>/projectroles</code>),
+              and deploys <code>XaitPorter_Setting__mdt</code> and <code>XaitPorter_ProjectRole_Mapping__mdt</code> records via
+              <code>Metadata.DeployContainer</code>. Enforces <code>XaitPorter_Admin_Permissions</code> permission set.
+            </div>
+          </div>
+        </div>
+
+        <div class="component-item">
+          <div class="ci-type">Controller</div>
+          <div>
+            <div class="ci-name">XaitTemplatesCmpController</div>
+            <div class="ci-desc">
+              Template management controller. Retrieves templates from XaitPorter API, persists them as
+              <code>XaitporterTemplate__c</code>, manages field mappings (<code>SFDC_Xaitporter_Field_Mapping__c</code>)
+              and template filters (<code>XaitporterTemplateFilter__c</code>). Performs object introspection
+              to present available Salesforce fields to the admin.
+            </div>
+          </div>
+        </div>
+
+        <div class="component-item">
+          <div class="ci-type">Controller</div>
+          <div>
+            <div class="ci-name">XaitAppSetupController</div>
+            <div class="ci-desc">
+              User onboarding and permission assignment controller. Lists active licensed users, assigns/removes
+              <code>XaitPorter_User_Permissions</code> permission sets, checks authentication state via
+              <code>ExternalDataUserAuth</code>, and initiates OAuth browser auth flow via <code>ConnectApi.NamedCredentials</code>.
+              Requires <code>ModifyAllData</code> for permission assignment.
+            </div>
+          </div>
+        </div>
+
+        <div class="component-item">
+          <div class="ci-type">Handler</div>
+          <div>
+            <div class="ci-name">XaitPorterProjectHandler</div>
+            <div class="ci-desc">
+              Trigger handler. Enforces the business rule that only one <code>XaitporterProject__c</code>
+              record per parent Account or Opportunity can have <code>Primary__c = true</code>.
+            </div>
+          </div>
+        </div>
+
+        <div class="component-item">
+          <div class="ci-type">API Service</div>
+          <div>
+            <div class="ci-name">XPAPI_Service</div>
+            <div class="ci-desc">
+              Business-level API client. One method per XaitPorter endpoint:
+              <code>meGet()</code>, <code>projectrolesGet()</code>, <code>projectsGet()</code>,
+              <code>projectsPost()</code>, <code>projectsUpdateMetadata()</code>, <code>usersGet()</code>.
+            </div>
+          </div>
+        </div>
+
+        <div class="component-item">
+          <div class="ci-type">API Client</div>
+          <div>
+            <div class="ci-name">XPAPI_Client</div>
+            <div class="ci-desc">
+              HTTP transport layer. Configures Named Credential callout, sets headers and 120s timeout.
+              Parses structured <code>XPExceptionResponse</code> errors from the XaitPorter API.
+            </div>
+          </div>
+        </div>
+
+        <div class="component-item">
+          <div class="ci-type">Utility</div>
+          <div>
+            <div class="ci-name">XPAPI_Utility</div>
+            <div class="ci-desc">
+              Shared API utilities. Defines <code>Param</code>, <code>Authentication</code> interface,
+              <code>ApiKeyHeaderAuth</code>, <code>ApiKeyQueryAuth</code>, and <code>ApiException</code>.
+            </div>
+          </div>
+        </div>
+
+        <div class="component-item">
+          <div class="ci-type">Utility</div>
+          <div>
+            <div class="ci-name">Safely</div>
+            <div class="ci-desc">
+              Safe DML wrapper. Chainable methods for insert/update/delete/upsert with field-level and
+              object-level permission checks. Used throughout to avoid DML exceptions.
+            </div>
+          </div>
+        </div>
+
+        <div class="component-item">
+          <div class="ci-type">Test Classes</div>
+          <div>
+            <div class="ci-name">CanTheUserTest · CreateProjectWithTemplateCtrlTest · SafelyTest · TestFactoryAccess</div>
+            <div class="ci-desc">Unit and integration test classes covering permission checks, project creation, and DML utilities.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="triggers">
+      <h2>Triggers</h2>
+      <div class="component-list">
+        <div class="component-item">
+          <div class="ci-type">Trigger</div>
+          <div>
+            <div class="ci-name">XaitPorterProjectTrigger <span class="badge badge-gray">after insert · after update</span></div>
+            <div class="ci-desc">
+              Fires on <code>XaitporterProject__c</code>. Delegates to <code>XaitPorterProjectHandler.handlePrimaryFlag()</code>
+              to enforce the one-primary-project-per-parent rule. Follows the trigger handler pattern —
+              no business logic in the trigger itself.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="lwc-aura">
+      <h2>LWC / Aura Components</h2>
+      <div class="component-list">
+
+        <div class="component-item">
+          <div class="ci-type">LWC</div>
+          <div>
+            <div class="ci-name">XaitPorterLightningComponent</div>
+            <div class="ci-desc">
+              Main record-page component embedded on Account and Opportunity lightning pages.
+              Displays linked XaitPorter projects, provides the "Create Project" action,
+              and surfaces project status/URL. Placed via FlexiPage on all three record pages.
+            </div>
+          </div>
+        </div>
+
+        <div class="component-item">
+          <div class="ci-type">LWC</div>
+          <div>
+            <div class="ci-name">xaitModalOpener</div>
+            <div class="ci-desc">
+              Lightweight modal launcher component used on Account_Record_Page2 and the Opportunity record page.
+              Opens the project creation modal inline without full page navigation.
+            </div>
+          </div>
+        </div>
+
+        <div class="component-item">
+          <div class="ci-type">Aura</div>
+          <div>
+            <div class="ci-name">xaitGuide</div>
+            <div class="ci-desc">
+              Onboarding guide component. Renders a step-by-step walkthrough for users setting up
+              their XaitPorter authentication for the first time. Steps: navigate to settings → find
+              New button → verify named credential → search/select user → close modal.
+              Labels are internationalised (EN/NO).
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>FlexiPage placements</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>FlexiPage</th><th>Components</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Account_Record_Page1</td>
+              <td><code>XaitPorterLightningComponent</code></td>
+            </tr>
+            <tr>
+              <td>Account_Record_Page2</td>
+              <td><code>XaitPorterLightningComponent</code>, <code>xaitModalOpener</code></td>
+            </tr>
+            <tr>
+              <td>Opportunity_Record_Page</td>
+              <td><code>xaitModalOpener</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="flows">
+      <h2>Flows</h2>
+      <div class="component-list">
+        <div class="component-item">
+          <div class="ci-type">Flow <span class="badge badge-gray">Draft</span></div>
+          <div>
+            <div class="ci-name">demoXait <span class="badge badge-orange">Demo / Sample</span></div>
+            <div class="ci-desc">
+              Record-triggered flow on <strong>Account</strong> (<code>onAllChanges</code>).
+              Demonstrates the Flow integration pattern: when <code>Account.Name = "Demo"</code>,
+              calls <code>XaitCreateProjectWithTemplateController.updateProjectInvocable()</code>
+              to push Salesforce field values to XaitPorter project metadata.
+              This is a reference implementation — production flows should be built per customer requirements.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout ok">
+        <strong>✅ Flow integration is production-ready</strong>
+        The <code>@InvocableMethod</code> on <code>XaitCreateProjectWithTemplateController</code> is the
+        intended way to trigger metadata sync from any Flow or Process Builder rule.
+        The <code>demoXait</code> flow is a working sample, not a production artefact.
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="metadata-config">
+      <h2>Metadata &amp; Configuration</h2>
+
+      <h3>Named Credentials</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Endpoint</th><th>Auth</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>XaitPorter_REST_API</code></td>
+              <td><code>https://salesforce.lab.xait.no/api/1/</code></td>
+              <td>OAuth / PerUser</td>
+              <td>All REST API callouts</td>
+            </tr>
+            <tr>
+              <td><code>Auth_API</code></td>
+              <td>—</td>
+              <td>—</td>
+              <td>Supporting credential for setup flow</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Quick Actions</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Action</th><th>Object</th><th>Type</th><th>Component</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Create_XaitPorter_Project</td>
+              <td>Account</td>
+              <td>LightningComponent</td>
+              <td>XaitPorterLightningComponent (250×-100px)</td>
+            </tr>
+            <tr>
+              <td>Create_XaitPorter_Project</td>
+              <td>Opportunity</td>
+              <td>LightningComponent</td>
+              <td>XaitPorterLightningComponent (250×-100px)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Custom Labels</h3>
+      <p>All user-facing strings are externalised as Custom Labels with <code>XP_</code> prefix. Available in English (en_US) and Norwegian (no). Key categories:</p>
+      <ul style="padding-left:1.5rem; margin-bottom:.75rem;">
+        <li>Permission errors: <code>XP_No_access</code>, <code>XP_No_ModifyAllData_access</code></li>
+        <li>Authentication: <code>XP_Credential_username_not_found</code></li>
+        <li>Template UI: <code>XP_No_templates_available_in_context</code>, <code>XP_Template_not_configured_correctly</code></li>
+        <li>API errors: <code>XP_Bad_request_*</code>, <code>XP_Project_duplication_failed</code></li>
+        <li>Guide: <code>XP_guide_title</code>, <code>XP_guide_step1</code> etc.</li>
+      </ul>
+
+      <h3>Remote Site Settings</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>ApexDevNet</code></td><td>Allowlisted remote site for outbound callouts</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="project-creation-flow">
+      <h2>Project Creation Flow</h2>
+      <p>End-to-end walkthrough of a user creating a XaitPorter project from an Opportunity record:</p>
+
+      <div class="flow">
+        <div class="flow-step"><strong>1. Entry point</strong> — User clicks "Create XaitPorter Project" Quick Action on Opportunity record</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>2. Auth check</strong> — Component verifies user has authenticated via Named Credential (<code>ExternalDataUserAuth</code>). If not → OAuth browser flow.</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>3. Template fetch</strong> — <code>fetchTemplateData()</code> loads <code>XaitporterTemplate__c</code> records filtered for Opportunity context, applying any <code>XaitporterTemplateFilter__c</code> rules.</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>4. User selects template</strong> — UI presents filtered templates. User selects one.</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>5. Load metadata</strong> — <code>loadTemplateMetadata()</code> reads <code>SFDC_Xaitporter_Field_Mapping__c</code> records, queries Salesforce source fields (Account/Opportunity/Contact/Owner), applies format transforms.</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>6. API call — POST /projects</strong> — <code>duplicateProject()</code> → <code>XPAPI_Service.projectsPost()</code> → HTTP POST via Named Credential. Body includes template ID and project metadata.</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>7. API call — PATCH /projects/:id/metadata</strong> — <code>updateProject()</code> pushes field-mapped Salesforce values to the new project's metadata fields.</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>8. Salesforce record created</strong> — <code>XaitporterProject__c</code> inserted with <code>Project_ID__c</code>, <code>Project_URL__c</code>, parent lookup, and <code>Primary__c</code>.</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>9. Trigger fires</strong> — <code>XaitPorterProjectTrigger</code> → <code>XaitPorterProjectHandler.handlePrimaryFlag()</code> ensures only one project is marked primary on this Opportunity.</div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="auth-flow">
+      <h2>Authentication Setup Flow (Admin)</h2>
+      <div class="flow">
+        <div class="flow-step"><strong>1.</strong> Admin opens XaitPorter Settings component (requires <code>XaitPorter_Admin_Permissions</code>)</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>2.</strong> <code>getSettingData()</code> checks <code>Auth_API_Ext</code> external credential status and loads <code>XaitPorter_Setting__mdt</code></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>3.</strong> Admin clicks "Test Connection" → <code>performGetMe()</code> calls <code>GET /me</code> via Named Credential</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>4.</strong> Admin clicks "Sync Roles" → <code>performGetProjectRoles()</code> calls <code>GET /projectroles</code>, maps to <code>XaitPorter_ProjectRole_Mapping__mdt</code></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>5.</strong> Admin saves format settings (date/boolean/multiselect) → <code>saveSettings()</code> deploys <code>XaitPorter_Setting__mdt</code> via Metadata API</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>6.</strong> Admin assigns users → <code>XaitAppSetupController.saveChanges()</code> assigns/removes <code>XaitPorter_User_Permissions</code> permission set (requires <code>ModifyAllData</code>)</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step"><strong>7.</strong> Each user follows OAuth browser flow on first use → token stored per-user in Named Credential</div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="field-mapping">
+      <h2>Field Mapping &amp; Data Sync</h2>
+
+      <h3>Supported source objects</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Source</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Account</td><td>Direct fields from the Account record</td></tr>
+            <tr><td>Opportunity</td><td>Direct fields from the Opportunity record</td></tr>
+            <tr><td>Contact</td><td>Primary contact via OpportunityContactRole</td></tr>
+            <tr><td>Contract</td><td>Related contract fields</td></tr>
+            <tr><td>User (Owner)</td><td>Record owner user fields</td></tr>
+            <tr><td>User (Running)</td><td>Currently logged-in user</td></tr>
+            <tr><td>User (PrimaryContactRole)</td><td>User linked to primary contact role</td></tr>
+            <tr><td>System.Today</td><td>Current date pseudo-field</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Format transforms</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field Type</th><th>Available Formats</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>DATE</td>
+              <td>ISO (<code>2018-12-21</code>), ISO API (<code>2018-12-21T00:00:00+0000</code>), International, UK, USA, Norway</td>
+            </tr>
+            <tr>
+              <td>DATETIME</td>
+              <td>Same as DATE with time component included</td>
+            </tr>
+            <tr>
+              <td>BOOLEAN</td>
+              <td>Yes/No · True/False · 1/0</td>
+            </tr>
+            <tr>
+              <td>MULTIPICKLIST</td>
+              <td>Comma-separated · Line break-separated</td>
+            </tr>
+            <tr>
+              <td>TEXT / others</td>
+              <td>Passed through as string</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="security-posture">
+      <h2>Security Posture</h2>
+
+      <h3>Sharing model</h3>
+      <ul style="padding-left:1.5rem; margin-bottom:.75rem;">
+        <li style="margin-bottom:.3rem;"><code>XaitCreateProjectWithTemplateController</code> is declared <code>global with sharing</code> — respects the running user's sharing rules.</li>
+        <li style="margin-bottom:.3rem;">SOQL queries mix <code>USER_MODE</code> (for field-level security enforcement) and <code>SYSTEM_MODE</code> where elevated access is legitimately required.</li>
+        <li style="margin-bottom:.3rem;"><code>Safely</code> utility class enforces object and field CRUD/FLS before all DML operations.</li>
+      </ul>
+
+      <h3>Outbound network security</h3>
+      <ul style="padding-left:1.5rem; margin-bottom:.75rem;">
+        <li>All external HTTP calls go through a <strong>Named Credential</strong> — no credentials ever appear in Apex code.</li>
+        <li>Named Credential uses <strong>per-user OAuth 2.0</strong> — no shared service account tokens.</li>
+        <li>Remote Site Setting <code>ApexDevNet</code> restricts outbound destinations.</li>
+        <li>Access token is injected by Salesforce automatically in the Authorization header — developers cannot read it.</li>
+      </ul>
+
+      <h3>Open items for Security Review</h3>
+      <div class="callout warn">
+        <strong>⚠️ Test Auth Provider endpoints</strong>
+        <code>xaitAuthProvider</code>, <code>xaitPorterTest</code>, and <code>xaitPorterTest1</code> point to
+        <code>salesforce-test.xaitporter.com</code>. Verify production endpoints are configured before go-live.
+      </div>
+      <div class="callout warn">
+        <strong>⚠️ Named Credential base URL</strong>
+        <code>XaitPorter_REST_API</code> currently points to <code>salesforce.lab.xait.no</code> (lab environment).
+        Must be updated for each target environment.
+      </div>
+      <div class="callout ok">
+        <strong>✅ No hardcoded credentials</strong>
+        All authentication is handled through Named Credentials and External Credentials. No secrets in Apex code.
+      </div>
+      <div class="callout ok">
+        <strong>✅ Permission-gated admin operations</strong>
+        Admin functions require <code>XaitPorter_Admin_Permissions</code> permission set and/or <code>ModifyAllData</code>.
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="permissions">
+      <h2>Permissions Model</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Permission Set</th><th>Target Users</th><th>Grants</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>XaitPorter_User_Permissions</code></td>
+              <td>All XaitPorter connector users</td>
+              <td>Access to custom objects, components, Quick Actions. Required for Named Credential per-user auth.</td>
+            </tr>
+            <tr>
+              <td><code>XaitPorter_Admin_Permissions</code></td>
+              <td>XaitPorter configuration admins</td>
+              <td>Access to Settings component, role sync, metadata deployment. Required for <code>XaitSettingsCmpController</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:.75rem;">
+        Assignment of <code>XaitPorter_User_Permissions</code> is managed via the
+        <strong>XaitPorter App Setup</strong> component, which requires the assigning admin to have
+        <code>ModifyAllData</code>. Bulk assignment to multiple users is supported.
+      </p>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════ -->
+    <section id="callouts">
+      <h2>External Callouts Summary</h2>
+
+      <div class="callout">
+        <strong>All outbound callouts</strong> are declared <code>@future(callout=true)</code> or made
+        from controller context. The Named Credential pattern ensures Salesforce manages token refresh
+        automatically. No callouts are made from triggers directly.
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>From Class</th><th>Endpoint</th><th>When</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>XaitCreateProjectWithTemplateController</code></td>
+              <td><code>POST /projects</code> · <code>PATCH /projects/:id/metadata</code> · <code>GET /users</code></td>
+              <td>User creates or updates a project</td>
+            </tr>
+            <tr>
+              <td><code>XaitSettingsCmpController</code></td>
+              <td><code>GET /me</code> · <code>GET /projectroles</code></td>
+              <td>Admin opens settings / tests connection</td>
+            </tr>
+            <tr>
+              <td><code>XaitTemplatesCmpController</code></td>
+              <td><code>GET /projects?filter[is_template]=true</code></td>
+              <td>Admin configures templates</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>
