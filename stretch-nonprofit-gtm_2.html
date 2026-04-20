@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nonprofit Cloud GTM — Stretch Engage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0D0D0D;--white:#FFFFFF;--charcoal:#2C2A27;--warm-brown:#5C4A3A;--sand:#C4A882;--off-white:#F5F3EF;--font-display:'Playfair Display',Georgia,serif;--font-body:'Inter',-apple-system,Helvetica,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--white);color:var(--black);font-size:16px;line-height:1.65}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--charcoal);display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:56px;border-bottom:1px solid rgba(196,168,130,.2)}
+.nav-logo{font-family:var(--font-display);font-style:italic;color:var(--white);font-size:1.25rem;letter-spacing:-.02em}
+.nav-links{display:flex;gap:32px}
+.nav-links a{color:rgba(255,255,255,.55);font-size:.75rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--sand)}
+.hero{background:var(--charcoal);color:var(--white);padding:140px 48px 96px;min-height:520px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;right:-80px;top:-80px;width:500px;height:500px;border-radius:50%;border:1px solid rgba(196,168,130,.12)}
+.hero::after{content:'';position:absolute;right:40px;top:40px;width:280px;height:280px;border-radius:50%;border:1px solid rgba(196,168,130,.08)}
+.hero-label{font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);margin-bottom:24px}
+.hero h1{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(2.4rem,5vw,4rem);line-height:1.1;color:var(--white);max-width:760px;margin-bottom:28px}
+.hero-sub{font-size:1.05rem;color:rgba(255,255,255,.6);max-width:560px;line-height:1.7}
+.hero-meta{margin-top:48px;display:flex;gap:40px;flex-wrap:wrap}
+.meta-label{font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px}
+.meta-val{font-size:.9rem;color:rgba(255,255,255,.75)}
+section{padding:80px 48px}
+section.dark{background:var(--charcoal);color:var(--white)}
+section.light{background:var(--off-white);color:var(--black)}
+section.white{background:var(--white);color:var(--black)}
+.sec-label{font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--warm-brown);margin-bottom:20px}
+section.dark .sec-label{color:var(--sand)}
+h2.disp{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:2rem;line-height:1.2;margin-bottom:16px}
+h2.sans{font-family:var(--font-body);font-weight:600;font-size:1.5rem;margin-bottom:16px}
+.intro{font-size:1rem;opacity:.7;max-width:640px;margin-bottom:48px;line-height:1.7}
+section.dark .intro{opacity:.6}
+.phases{display:grid;gap:1px;background:rgba(196,168,130,.25)}
+.phase{background:var(--off-white);padding:36px 40px;display:grid;grid-template-columns:200px 1fr;gap:32px;align-items:start}
+.phase:nth-child(even){background:var(--white)}
+.ph-num{font-size:.68rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--sand);margin-bottom:8px}
+.ph-title{font-family:var(--font-display);font-style:italic;font-size:1.3rem;color:var(--black);line-height:1.2}
+.ph-weeks{font-size:.75rem;color:rgba(0,0,0,.4);margin-top:8px;font-weight:500}
+.ph-body h3{font-size:.82rem;font-weight:600;margin-bottom:8px;margin-top:20px;text-transform:uppercase;letter-spacing:.06em;color:var(--warm-brown)}
+.ph-body h3:first-child{margin-top:0}
+.ph-body p{font-size:.92rem;opacity:.75;line-height:1.65;margin-bottom:8px}
+.tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pill{font-size:.68rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border:1px solid rgba(92,74,58,.25);color:var(--warm-brown);padding:4px 10px}
+.risks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(196,168,130,.25)}
+.risk{padding:32px 36px;background:var(--charcoal)}
+.risk:nth-child(odd){background:#332F2B}
+.sev{font-size:.65rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;padding:3px 10px;display:inline-block}
+.sev.crit{background:rgba(196,168,130,.15);color:var(--sand);border:1px solid rgba(196,168,130,.3)}
+.sev.high{background:rgba(92,74,58,.3);color:rgba(196,168,130,.8);border:1px solid rgba(92,74,58,.4)}
+.risk h3{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:1.15rem;color:var(--white);margin-bottom:12px;line-height:1.25}
+.risk p{font-size:.875rem;color:rgba(255,255,255,.55);line-height:1.65;margin-bottom:14px}
+.mit{border-top:1px solid rgba(196,168,130,.2);padding-top:14px;margin-top:4px}
+.mit-lbl{font-size:.65rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--sand);margin-bottom:6px}
+.mit p{font-size:.825rem;color:rgba(255,255,255,.65);margin-bottom:0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:40px}
+.card{padding:36px;border:1px solid rgba(92,74,58,.2)}
+.card h3{font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-brown);margin-bottom:16px}
+.card p{font-size:.9rem;opacity:.72;line-height:1.7;margin-bottom:12px}
+.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(0,0,0,.08);margin-top:40px}
+.cap{background:var(--off-white);padding:24px 20px}
+.cap-lbl{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--warm-brown);margin-bottom:10px}
+.cap p{font-size:.82rem;opacity:.65}
+.pkgs{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--sand);margin-top:40px}
+.pkg{padding:36px 32px;background:var(--white)}
+.pkg.feat{background:var(--charcoal);color:var(--white)}
+.pkg-num{font-size:.65rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--warm-brown);margin-bottom:16px}
+.pkg.feat .pkg-num{color:var(--sand)}
+.pkg h3{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:1.25rem;margin-bottom:12px}
+.pkg-price{font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px;color:var(--warm-brown)}
+.pkg.feat .pkg-price{color:var(--sand)}
+.pkg > p{font-size:.875rem;opacity:.65;line-height:1.65}
+.pkg.feat > p{opacity:.7}
+.pkg ul{margin-top:20px;list-style:none}
+.pkg li{font-size:.82rem;padding:7px 0;border-top:1px solid rgba(0,0,0,.07);opacity:.7}
+.pkg.feat li{border-color:rgba(255,255,255,.1)}
+.pkg li::before{content:'—';margin-right:10px;opacity:.4}
+.agents{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(196,168,130,.25)}
+.agent{background:var(--white);padding:28px 32px}
+.agent:nth-child(odd){background:var(--off-white)}
+.ag-lbl{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-brown);margin-bottom:10px}
+.agent h3{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:1.1rem;margin-bottom:10px;color:var(--black)}
+.agent p{font-size:.87rem;opacity:.65;line-height:1.65}
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(196,168,130,.2);margin-top:40px}
+.diff{padding:32px 28px;background:rgba(255,255,255,.04)}
+.diff-lbl{font-size:.68rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--sand);margin-bottom:14px}
+.diff p{font-size:.875rem;color:rgba(255,255,255,.55);line-height:1.65}
+footer{background:var(--black);color:var(--white);padding:48px;display:flex;justify-content:space-between;align-items:flex-end}
+.foot-logo{font-family:var(--font-display);font-style:italic;font-size:1.5rem;color:var(--white)}
+.foot-r{text-align:right}
+.foot-r p{font-size:.75rem;color:rgba(255,255,255,.35);line-height:1.8}
+@media(max-width:768px){
+  nav{padding:0 24px}.nav-links{display:none}
+  .hero{padding:100px 24px 60px}section{padding:56px 24px}
+  .phase{grid-template-columns:1fr;gap:16px}
+  .risks,.two-col,.pkgs,.agents,.diff-grid{grid-template-columns:1fr}
+  .four-col{grid-template-columns:1fr 1fr}
+  footer{flex-direction:column;gap:24px}.foot-r{text-align:left}
+}
+.diag-wrap{margin-top:0;margin-bottom:0;max-width:720px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.diag-wrap svg{display:block;min-width:520px;width:100%}
+@media(min-width:1200px){.diag-wrap{max-width:680px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">stretch engage</div>
+  <div class="nav-links">
+    <a href="#strategy">Strategy</a>
+    <a href="#implementation">Implementation</a>
+    <a href="#risks">Risks</a>
+    <a href="#data360">Data 360</a>
+    <a href="#gtm">GTM packages</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Stretch Engage · Nordic Nonprofit Practice</div>
+  <h1>From NPSP to<br>Nonprofit Cloud —<br>a Nordic GTM strategy</h1>
+  <p class="hero-sub">A strategic analysis of the opportunity, implementation architecture, risk landscape, and agentic era roadmap for Nordic nonprofit organisations migrating to Salesforce Nonprofit Cloud with FinDock.</p>
+  <div class="hero-meta">
+    <div><div class="meta-label">Market</div><div class="meta-val">Nordic nonprofits (NO / SE / DK)</div></div>
+    <div><div class="meta-label">Partner</div><div class="meta-val">FinDock</div></div>
+    <div><div class="meta-label">Technology</div><div class="meta-val">Salesforce NPC · Data Cloud · Agentforce</div></div>
+    <div><div class="meta-label">Prepared by</div><div class="meta-val">Stretch Engage AS, Oslo</div></div>
+  </div>
+</div>
+
+<!-- STRATEGY -->
+<section class="white" id="strategy">
+  <div class="sec-label">Strategic context</div>
+  <h2 class="disp">Two entry points,<br>one destination</h2>
+  <p class="intro">The GTM motion with FinDock bifurcates across two distinct customer profiles — each requiring a different conversation, but converging on the same modern platform.</p>
+  <div class="phases" style="margin-top:0">
+    <div class="phase" style="background:var(--charcoal)">
+      <div>
+        <div class="ph-num" style="color:var(--sand)">Entry point 01</div>
+        <div class="ph-title" style="color:var(--white)">Existing NPSP customers</div>
+        <div class="ph-weeks" style="color:rgba(255,255,255,.4)">Migration engagement</div>
+      </div>
+      <div class="ph-body">
+        <h3 style="color:var(--sand)">The conversation</h3>
+        <p style="color:rgba(255,255,255,.65)">Your Salesforce investment is safe. NPSP is reaching end of strategic life — we are upgrading the engine, not replacing your work. Everything you have built informed what we build next.</p>
+        <h3 style="color:var(--sand)">The hook</h3>
+        <p style="color:rgba(255,255,255,.65)">FinDock on NPC replaces fragmented payment handling. Recurring Vipps giving, Autogiro, Nets — unified under one payment rail with full reconciliation.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div>
+        <div class="ph-num">Entry point 02</div>
+        <div class="ph-title">New to Salesforce</div>
+        <div class="ph-weeks">Greenfield engagement</div>
+      </div>
+      <div class="ph-body">
+        <h3>The conversation</h3>
+        <p>Skip the legacy conversation entirely. You are selling a vision: an AI-native fundraising platform built for modern nonprofits, live in weeks, not years.</p>
+        <h3>The hook</h3>
+        <p>NPC + FinDock + Data Cloud is the complete modern nonprofit stack. Donor intelligence, payment infrastructure, and AI-powered fundraising — out of the box, Nordic-localised from day one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPLEMENTATION -->
+<section class="light" id="implementation" style="padding-bottom:0">
+  <div class="sec-label">Implementation architecture</div>
+  <h2 class="disp">The agile migration<br>engine</h2>
+  <p class="intro" style="margin-bottom:36px">A four-phase approach that uses AI tooling to compress discovery, runs solution and data tracks in parallel, and positions Data Cloud as the staging layer — not an afterthought.</p>
+
+  <!-- ARCHITECTURE DIAGRAM -->
+  <div class="diag-wrap">
+  <svg width="100%" viewBox="0 0 780 860" role="img" xmlns="http://www.w3.org/2000/svg" style="display:block;min-width:480px">
+    <title>Nonprofit Cloud Migration Architecture</title>
+    <desc>Four-phase migration architecture from NPSP source landscape through assessment, migration engine, Data 360 foundation, and agentic era layer</desc>
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="#C4A882" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+
+    <!-- SOURCE LANDSCAPE -->
+    <rect x="40" y="30" width="700" height="78" fill="#2C2A27" rx="2"/>
+    <text x="60" y="58" font-family="'Inter',-apple-system,sans-serif" font-size="10" font-weight="600" letter-spacing="0.1em" fill="#C4A882" text-transform="uppercase">SOURCE LANDSCAPE</text>
+    <line x1="60" y1="68" x2="720" y2="68" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="200" y="90" font-family="'Playfair Display',Georgia,serif" font-style="italic" font-size="14" fill="rgba(255,255,255,0.75)" text-anchor="middle">NPSP + FinDock</text>
+    <text x="390" y="90" font-family="'Playfair Display',Georgia,serif" font-style="italic" font-size="14" fill="rgba(255,255,255,0.75)" text-anchor="middle">NPSP only</text>
+    <text x="580" y="90" font-family="'Playfair Display',Georgia,serif" font-style="italic" font-size="14" fill="rgba(255,255,255,0.75)" text-anchor="middle">New to Salesforce</text>
+    <!-- vertical dividers -->
+    <line x1="295" y1="68" x2="295" y2="106" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <line x1="485" y1="68" x2="485" y2="106" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+
+    <!-- arrow down -->
+    <line x1="390" y1="108" x2="390" y2="138" stroke="#C4A882" stroke-width="1" marker-end="url(#arr)" opacity="0.6"/>
+
+    <!-- PHASE 1: ASSESSMENT -->
+    <rect x="40" y="140" width="700" height="118" fill="#3a3530" rx="2"/>
+    <rect x="40" y="140" width="4" height="118" fill="#C4A882" rx="0"/>
+    <text x="62" y="165" font-family="'Inter',-apple-system,sans-serif" font-size="9" font-weight="600" letter-spacing="0.12em" fill="#C4A882">PHASE 01 · WEEKS 1–2 · FIXED PRICE</text>
+    <text x="62" y="188" font-family="'Playfair Display',Georgia,serif" font-style="italic" font-size="17" fill="white">AI-powered assessment</text>
+
+    <!-- 4 inner boxes -->
+    <rect x="60" y="202" width="152" height="44" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="136" y="220" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">Org scanner</text>
+    <text x="136" y="236" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">Metadata + schema</text>
+
+    <rect x="224" y="202" width="152" height="44" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="300" y="220" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">Data quality</text>
+    <text x="300" y="236" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">Duplicates + gaps</text>
+
+    <rect x="388" y="202" width="152" height="44" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="464" y="220" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">Customisation map</text>
+    <text x="464" y="236" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">Flows, triggers, LWC</text>
+
+    <rect x="552" y="202" width="168" height="44" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="636" y="220" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">FinDock audit</text>
+    <text x="636" y="236" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">Payments + Vipps map</text>
+
+    <!-- arrow down -->
+    <line x1="390" y1="258" x2="390" y2="288" stroke="#C4A882" stroke-width="1" marker-end="url(#arr)" opacity="0.6"/>
+
+    <!-- PHASE 2: MIGRATION ENGINE -->
+    <rect x="40" y="290" width="700" height="150" fill="#2C2A27" rx="2"/>
+    <rect x="40" y="290" width="4" height="150" fill="#C4A882" rx="0"/>
+    <text x="62" y="315" font-family="'Inter',sans-serif" font-size="9" font-weight="600" letter-spacing="0.12em" fill="#C4A882">PHASE 02 · WEEKS 3–12 · PARALLEL TRACKS</text>
+    <text x="62" y="338" font-family="'Playfair Display',Georgia,serif" font-style="italic" font-size="17" fill="white">Migration engine</text>
+
+    <!-- Solution track -->
+    <rect x="60" y="350" width="310" height="76" fill="rgba(196,168,130,0.06)" rx="1" stroke="rgba(196,168,130,0.15)" stroke-width="0.5"/>
+    <text x="75" y="368" font-family="'Inter',sans-serif" font-size="9" font-weight="600" letter-spacing="0.08em" fill="#C4A882">SOLUTION TRACK</text>
+    <rect x="75" y="376" width="128" height="38" fill="rgba(196,168,130,0.1)" rx="1"/>
+    <text x="139" y="392" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.8)" text-anchor="middle">NPC config</text>
+    <text x="139" y="406" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">Objects + mappings</text>
+    <rect x="215" y="376" width="140" height="38" fill="rgba(196,168,130,0.1)" rx="1"/>
+    <text x="285" y="392" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.8)" text-anchor="middle">FinDock Nordic</text>
+    <text x="285" y="406" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">Vipps + Nets + Autogiro</text>
+
+    <!-- Data track -->
+    <rect x="382" y="350" width="338" height="76" fill="rgba(196,168,130,0.06)" rx="1" stroke="rgba(196,168,130,0.15)" stroke-width="0.5"/>
+    <text x="397" y="368" font-family="'Inter',sans-serif" font-size="9" font-weight="600" letter-spacing="0.08em" fill="#C4A882">DATA TRACK</text>
+    <rect x="397" y="376" width="148" height="38" fill="rgba(196,168,130,0.1)" rx="1"/>
+    <text x="471" y="392" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.8)" text-anchor="middle">ETL pipeline</text>
+    <text x="471" y="406" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">AI transform + load</text>
+    <rect x="557" y="376" width="148" height="38" fill="rgba(196,168,130,0.1)" rx="1"/>
+    <text x="631" y="392" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.8)" text-anchor="middle">Validation suite</text>
+    <text x="631" y="406" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">Count + reconcile</text>
+
+    <!-- arrow down -->
+    <line x1="390" y1="440" x2="390" y2="470" stroke="#C4A882" stroke-width="1" marker-end="url(#arr)" opacity="0.6"/>
+
+    <!-- PHASE 3: DATA 360 -->
+    <rect x="40" y="472" width="700" height="148" fill="#3a3530" rx="2"/>
+    <rect x="40" y="472" width="4" height="148" fill="#C4A882" rx="0"/>
+    <text x="62" y="497" font-family="'Inter',sans-serif" font-size="9" font-weight="600" letter-spacing="0.12em" fill="#C4A882">PHASE 03 · DATA 360 FOUNDATION · CONCURRENT</text>
+    <text x="62" y="520" font-family="'Playfair Display',Georgia,serif" font-style="italic" font-size="17" fill="white">Unified donor profile + identity resolution</text>
+
+    <rect x="60" y="532" width="152" height="68" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="136" y="553" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">Ingestion</text>
+    <text x="136" y="569" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">NPSP + ext. sources</text>
+    <text x="136" y="583" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.35)" text-anchor="middle">Email, Vipps, events</text>
+
+    <rect x="224" y="532" width="152" height="68" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="300" y="553" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">Identity graph</text>
+    <text x="300" y="569" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">Match + merge</text>
+    <text x="300" y="583" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.35)" text-anchor="middle">Dedup before NPC</text>
+
+    <rect x="388" y="532" width="152" height="68" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="464" y="553" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">Segments</text>
+    <text x="464" y="569" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">Nordic donor personas</text>
+    <text x="464" y="583" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.35)" text-anchor="middle">Lapsed, high-propensity</text>
+
+    <rect x="552" y="532" width="168" height="68" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="636" y="553" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">Activation</text>
+    <text x="636" y="569" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">NPC + MCA journeys</text>
+    <text x="636" y="583" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.35)" text-anchor="middle">Real-time enrichment</text>
+
+    <!-- arrow down -->
+    <line x1="390" y1="620" x2="390" y2="650" stroke="#C4A882" stroke-width="1" marker-end="url(#arr)" opacity="0.6"/>
+
+    <!-- PHASE 4: AGENTIC -->
+    <rect x="40" y="652" width="700" height="170" fill="#2C2A27" rx="2"/>
+    <rect x="40" y="652" width="4" height="170" fill="#C4A882" rx="0"/>
+    <text x="62" y="677" font-family="'Inter',sans-serif" font-size="9" font-weight="600" letter-spacing="0.12em" fill="#C4A882">PHASE 04 · MONTHS 6–12 · AGENTIC ERA</text>
+    <text x="62" y="700" font-family="'Playfair Display',Georgia,serif" font-style="italic" font-size="17" fill="white">Agentforce on a unified data layer</text>
+
+    <rect x="60" y="712" width="152" height="62" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="136" y="732" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">Donor agent</text>
+    <text x="136" y="748" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">Churn + Vipps nudge</text>
+
+    <rect x="224" y="712" width="152" height="62" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="300" y="732" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">Campaign agent</text>
+    <text x="300" y="748" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">Real-time optimisation</text>
+
+    <rect x="388" y="712" width="152" height="62" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="464" y="732" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">Compliance agent</text>
+    <text x="464" y="748" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">GDPR + tax receipts</text>
+
+    <rect x="552" y="712" width="168" height="62" fill="rgba(196,168,130,0.08)" rx="1" stroke="rgba(196,168,130,0.2)" stroke-width="0.5"/>
+    <text x="636" y="732" font-family="'Inter',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.85)" text-anchor="middle">Finance agent</text>
+    <text x="636" y="748" font-family="'Inter',sans-serif" font-size="9" fill="rgba(255,255,255,0.45)" text-anchor="middle">FinDock reconciliation</text>
+
+    <!-- Outcome bar -->
+    <rect x="60" y="786" width="660" height="26" fill="rgba(196,168,130,0.15)" rx="1" stroke="rgba(196,168,130,0.3)" stroke-width="0.5"/>
+    <text x="390" y="803" font-family="'Inter',sans-serif" font-size="10" font-weight="600" letter-spacing="0.04em" fill="#C4A882" text-anchor="middle">OUTCOME: AI-FIRST NONPROFIT OPERATING ON A UNIFIED DATA LAYER</text>
+  </svg>
+  </div>
+</section>
+
+<div class="phases">
+  <div class="phase">
+    <div>
+      <div class="ph-num">Phase 01</div>
+      <div class="ph-title">AI-powered assessment</div>
+      <div class="ph-weeks">Weeks 1–2 · Fixed price</div>
+    </div>
+    <div class="ph-body">
+      <h3>What we deliver</h3>
+      <p>Automated org profiling against the client NPSP org. Full metadata scan, data quality analysis, customisation map, and FinDock audit — packaged as a board-presentable migration readiness report.</p>
+      <h3>Tooling</h3>
+      <div class="tools">
+        <span class="pill">sf-agent-platform</span>
+        <span class="pill">Org Health Agent</span>
+        <span class="pill">Data Quality Agent</span>
+        <span class="pill">Code Quality Agent</span>
+        <span class="pill">FinDock Audit</span>
+      </div>
+      <h3>Why it matters</h3>
+      <p>The assessment is the primary risk management mechanism for the entire engagement. Nothing in the main SOW is signed without assessment output in hand. Standalone deliverable — 15–25k NOK, low risk for the client, natural FinDock co-sell.</p>
+    </div>
+  </div>
+  <div class="phase">
+    <div>
+      <div class="ph-num">Phase 02</div>
+      <div class="ph-title">Migration engine</div>
+      <div class="ph-weeks">Weeks 3–12 · Parallel tracks</div>
+    </div>
+    <div class="ph-body">
+      <h3>Solution track</h3>
+      <p>NPC configuration with explicit disposition decisions on every NPSP customisation: rebuild, retire, or replace with native NPC functionality. FinDock installation with Nordic-specific payment stream mapping — Vipps, Nets, Autogiro.</p>
+      <h3>Data track</h3>
+      <p>Custom ETL pipeline with prompt-engineered transformation logic against the NPSP to NPC data model delta. Transformation rules generated by AI, validated against sample extracts, Git-versioned as reusable Stretch assets.</p>
+      <h3>Key principle</h3>
+      <p>This is not a data migration — it is a data model migration. Every assumption baked into existing custom code must be re-evaluated before anything touches NPC.</p>
+    </div>
+  </div>
+  <div class="phase">
+    <div>
+      <div class="ph-num">Phase 03</div>
+      <div class="ph-title">Data 360 foundation</div>
+      <div class="ph-weeks">Concurrent with Phase 02</div>
+    </div>
+    <div class="ph-body">
+      <h3>Data Cloud as staging layer</h3>
+      <p>Ingest the full NPSP dataset into Data Cloud first. Let identity resolution do the deduplication work — matching constituents across source systems using email, phone, and address — before a single record touches NPC.</p>
+      <h3>What this changes</h3>
+      <p>Traditional migrations clean data in spreadsheets, then load. This approach cleans through an intelligent identity graph, then loads what is already unified. Faster, more reliable, and the foundation persists post go-live.</p>
+      <div class="tools">
+        <span class="pill">Identity Graph</span>
+        <span class="pill">Match &amp; Merge</span>
+        <span class="pill">Donor Segments</span>
+        <span class="pill">MCA Activation</span>
+      </div>
+    </div>
+  </div>
+  <div class="phase">
+    <div>
+      <div class="ph-num">Phase 04</div>
+      <div class="ph-title">Agentic era layer</div>
+      <div class="ph-weeks">Months 6–12 post go-live</div>
+    </div>
+    <div class="ph-body">
+      <h3>Agentforce on a unified foundation</h3>
+      <p>Agents operating on unified Data Cloud donor profiles are genuinely useful rather than demonstrations. Every interaction — Vipps transaction, email open, service call, website visit — enriches the same profile in real time.</p>
+      <h3>Nordic-specific advantage</h3>
+      <p>Vipps notification APIs give agents a high-engagement outreach channel that email cannot match. Donor retention signals paired with Vipps soft nudges is a uniquely Nordic capability.</p>
+      <div class="tools">
+        <span class="pill">Agentforce</span>
+        <span class="pill">Vipps API</span>
+        <span class="pill">FinDock Reconciliation</span>
+        <span class="pill">GDPR Compliance</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RISKS -->
+<section class="dark" id="risks">
+  <div class="sec-label">Risk analysis</div>
+  <h2 class="disp" style="color:var(--white)">The red flags<br>and how to handle them</h2>
+  <p class="intro">These are the risks that have killed migrations before. Most share a common root cause: information asymmetry resolved too late. The assessment phase is the answer to almost all of them.</p>
+</section>
+
+<div class="risks">
+  <div class="risk">
+    <div class="sev crit">Critical</div>
+    <h3>"You are destroying what we built"</h3>
+    <p>The biggest risk has nothing to do with technology. NPSP orgs at established nonprofits are 5–10 years old. Staff have built workflows around them. When you say "data model migration," they hear "nothing counts anymore."</p>
+    <div class="mit"><div class="mit-lbl">Mitigation</div><p>Reframe before you ever open a sandbox. The assessment must show explicitly which customisations survive into NPC and which transform. People accept change when they can trace continuity.</p></div>
+  </div>
+  <div class="risk">
+    <div class="sev crit">Critical</div>
+    <h3>Vipps agreement continuity</h3>
+    <p>Recurring Vipps agreements (faste bidrag) are tied to the merchant agreement and donor phone number. They do not automatically transfer when FinDock Vipps configuration changes. Agreement ID breaks mean charge failures and cancellation notices to your client's recurring donors.</p>
+    <div class="mit"><div class="mit-lbl">Mitigation</div><p>Map every active recurring agreement before any FinDock reconfiguration touches production. Coordinate with Vipps MobilePay support early — this requires lead time and cannot be rushed.</p></div>
+  </div>
+  <div class="risk">
+    <div class="sev high">High</div>
+    <h3>High customisation debt in NPSP</h3>
+    <p>Orgs with more than 30–40 custom Apex classes carry serious risk. The NPC data model is genuinely different, and every assumption baked into that code needs re-evaluation. Subtle production bugs from untested code paths are the most common migration failure mode.</p>
+    <div class="mit"><div class="mit-lbl">Mitigation</div><p>The assessment produces a full customisation map with explicit RAG status. Disposition decisions — rebuild, retire, replace with native NPC — happen before the SOW is signed, never during delivery.</p></div>
+  </div>
+  <div class="risk">
+    <div class="sev high">High</div>
+    <h3>Dirty constituent data</h3>
+    <p>Endemic to nonprofits. Duplicate contacts, incomplete household structures, years of manual entry errors. Migrating this directly into NPC imports the mess into a more complex data model — and it is harder to clean on the other side.</p>
+    <div class="mit"><div class="mit-lbl">Mitigation</div><p>Data Cloud identity resolution handles machine-matchable duplicates before NPC is touched. Scope manual remediation explicitly — name variations and incomplete phone numbers require human review. Budget for it or absorb the cost.</p></div>
+  </div>
+  <div class="risk">
+    <div class="sev high">High</div>
+    <h3>Non-standard FinDock implementation</h3>
+    <p>Clients who say "we have FinDock" may have it implemented outside the standard object model — custom payment objects, bypassed reconciliation flows, direct Apex integrations to payment providers. This means reimplementation, not migration.</p>
+    <div class="mit"><div class="mit-lbl">Mitigation</div><p>Always include a FinDock-specific technical audit as a named deliverable in the assessment. Never assume a stated FinDock implementation is a correct one.</p></div>
+  </div>
+  <div class="risk">
+    <div class="sev high">High</div>
+    <h3>Go-live timing vs fundraising season</h3>
+    <p>Nordic nonprofits derive 40–60% of annual fundraising revenue in Q4. A go-live in October or November — payment failures, staff confusion, donor-facing errors during Christmas campaign season — can cause catastrophic financial and reputational damage.</p>
+    <div class="mit"><div class="mit-lbl">Mitigation</div><p>Go-live must be before September or after February. Write it into the contract as a hard constraint. Non-negotiable.</p></div>
+  </div>
+  <div class="risk">
+    <div class="sev high">High</div>
+    <h3>Single point of knowledge failure</h3>
+    <p>Nonprofit IT is chronically under-resourced. One person often holds all institutional knowledge about why things are configured the way they are. If they leave mid-migration, you lose the ability to make safe decisions — and undocumented integrations surface at the worst moment.</p>
+    <div class="mit"><div class="mit-lbl">Mitigation</div><p>Documentation milestones are risk management, not optional extras. Build them into the project plan with client sign-off required at each gate.</p></div>
+  </div>
+  <div class="risk">
+    <div class="sev high">High</div>
+    <h3>NPC platform maturity gaps</h3>
+    <p>NPC is newer than NPSP. The ecosystem of third-party apps, community expertise, and documented edge cases is smaller. Features NPSP customers take for granted — certain grant management patterns, volunteer management — may be less mature today.</p>
+    <div class="mit"><div class="mit-lbl">Mitigation</div><p>Map every actively-used NPSP feature against NPC current capabilities during assessment. Where gaps exist, plan workarounds or staged delivery before the SOW is signed.</p></div>
+  </div>
+</div>
+
+<!-- DATA 360 -->
+<section class="white" id="data360">
+  <div class="sec-label">Data strategy</div>
+  <h2 class="disp">Data 360 — migration means<br>and permanent foundation</h2>
+  <p class="intro">Data Cloud should not be an afterthought after migration. It should be the staging layer during migration — and the permanent data foundation for the agentic era that follows.</p>
+  <div class="two-col">
+    <div class="card">
+      <h3>As a migration means</h3>
+      <p>Ingest the full NPSP dataset into Data Cloud first. Let the identity graph do the deduplication work — matching constituents across source systems using email, phone, and address — before any record touches NPC.</p>
+      <p>What lands in NPC is already clean and unified. Fundamentally different from cleaning data in spreadsheets and loading it. Faster, more reliable, and the foundation does not disappear after go-live.</p>
+    </div>
+    <div class="card">
+      <h3>As the agentic era layer</h3>
+      <p>Post-migration, every donor interaction — a Vipps donation, a website visit, an email open, a service call — enriches the same unified profile across all channels.</p>
+      <p>An agent that sees a donor's 8-year giving history, last contact channel, preferred cause area, and recent Vipps transaction can make meaningful decisions. An agent operating on CRM data alone cannot.</p>
+    </div>
+  </div>
+  <div class="four-col">
+    <div class="cap"><div class="cap-lbl">Identity graph</div><p>Match and merge constituents across NPSP, event systems, email platforms, and Vipps donor records</p></div>
+    <div class="cap"><div class="cap-lbl">Nordic segments</div><p>Lapsed major donors, high-propensity upgrade candidates, GDPR consent status by channel</p></div>
+    <div class="cap"><div class="cap-lbl">Activation</div><p>Segments activate into NPC for relationship management and Marketing Cloud for automated journeys</p></div>
+    <div class="cap"><div class="cap-lbl">Real-time enrichment</div><p>Every payment, interaction, and channel event updates the unified profile immediately</p></div>
+  </div>
+</section>
+
+<!-- AGENTS -->
+<section class="light" id="agents">
+  <div class="sec-label">Agentic era</div>
+  <h2 class="sans">Four agents that change nonprofit operations</h2>
+  <p class="intro">Once NPC and Data Cloud are live, Agentforce agents operate on a genuinely unified donor profile — not siloed CRM data. These are the highest-value agents for Nordic nonprofits.</p>
+</section>
+
+<div class="agents">
+  <div class="agent">
+    <div class="ag-lbl">Donor retention agent</div>
+    <h3>Predict and prevent donor churn</h3>
+    <p>Monitors churn signals — missed recurring gift, open rate decline, major life events — and initiates personalised outreach before the donor lapses. Pairs with Vipps notification APIs for soft nudges with far higher open rates than email.</p>
+  </div>
+  <div class="agent">
+    <div class="ag-lbl">Fundraising campaign agent</div>
+    <h3>Optimise campaigns in real time</h3>
+    <p>Evaluates segment performance continuously and reallocates budget or messaging across channels. Particularly high-value for the Christmas campaign period — 40–60% of annual Nordic nonprofit revenue concentrated in 6–8 weeks.</p>
+  </div>
+  <div class="agent">
+    <div class="ag-lbl">Finance reconciliation agent</div>
+    <h3>Automate FinDock-Vipps settlement</h3>
+    <p>Ingests settlement files, matches against Salesforce records, flags exceptions, and generates journal entries. The reconciliation pattern proven in production — now automated end-to-end with exception handling and full audit trail.</p>
+  </div>
+  <div class="agent">
+    <div class="ag-lbl">Compliance agent</div>
+    <h3>GDPR and Norwegian tax receipts</h3>
+    <p>Manages GDPR consent status by channel and automates Norwegian tax receipt generation (Gaver til frivillige organisasjoner). Regulatory overhead that costs nonprofits real staff time — highly automatable with the right data foundation.</p>
+  </div>
+</div>
+
+<!-- GTM PACKAGES -->
+<section class="white" id="gtm">
+  <div class="sec-label">Go-to-market</div>
+  <h2 class="disp">Three packaged offerings</h2>
+  <p class="intro">Designed for co-sale with FinDock. Each offering has a clear entry point, a fixed-scope deliverable, and a natural next step — creating a structured funnel from first contact to full agentic platform.</p>
+  <div class="pkgs">
+    <div class="pkg">
+      <div class="pkg-num">Package 01</div>
+      <h3>Ready to Migrate</h3>
+      <div class="pkg-price">Fixed price · 15–25k NOK</div>
+      <p>Automated org scan plus structured migration readiness report. FinDock co-sells this because they want clean FinDock installs — not migrations from messy existing payment integrations.</p>
+      <ul>
+        <li>NPSP metadata + schema scan</li>
+        <li>Data quality analysis</li>
+        <li>Customisation map with RAG status</li>
+        <li>FinDock technical audit</li>
+        <li>Vipps agreement inventory</li>
+        <li>Board-ready readiness report</li>
+      </ul>
+    </div>
+    <div class="pkg feat">
+      <div class="pkg-num">Package 02</div>
+      <h3>NPC Foundation</h3>
+      <div class="pkg-price">Outcome-based · ROI anchored</div>
+      <p>Core migration, NPC configuration, FinDock Nordic setup, and Data Cloud ingestion. Priced on outcomes — constituents unified, payment streams live, time to first donation processed.</p>
+      <ul>
+        <li>NPC full implementation</li>
+        <li>Data model migration</li>
+        <li>FinDock Vipps + Nets setup</li>
+        <li>Data Cloud identity resolution</li>
+        <li>Donor segment library</li>
+        <li>Go-live support and handover</li>
+      </ul>
+    </div>
+    <div class="pkg">
+      <div class="pkg-num">Package 03</div>
+      <h3>Agentic Nonprofit</h3>
+      <div class="pkg-price">Retainer · 6–12 months post go-live</div>
+      <p>Agentforce layer deployment positioned as a separate phase once the data foundation is proven. Ongoing agent tuning and Data Cloud segment management.</p>
+      <ul>
+        <li>Agentforce configuration</li>
+        <li>Donor retention agent</li>
+        <li>Finance reconciliation agent</li>
+        <li>Compliance agent (GDPR + tax)</li>
+        <li>Ongoing segment optimisation</li>
+        <li>Quarterly business review</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- DIFFERENTIATION -->
+<section class="dark">
+  <div class="sec-label">Why Stretch Engage</div>
+  <h2 class="disp" style="color:var(--white)">A rare combination<br>in the Nordic market</h2>
+  <p class="intro">The differentiation is not technical skill. It is the combination of capabilities that no other Nordic Salesforce partner brings together in a single practice.</p>
+  <div class="diff-grid">
+    <div class="diff">
+      <div class="diff-lbl">Deep FinDock Nordic knowledge</div>
+      <p>Vipps recurring agreements, Norwegian tax receipts, Nets integration — production-proven, not theoretical. We have reconciled real settlement data for real Norwegian nonprofits.</p>
+    </div>
+    <div class="diff">
+      <div class="diff-lbl">AI-accelerated assessment</div>
+      <p>What takes other partners 4–6 weeks of manual discovery, we deliver in 2 weeks using automated org scanning agents. Faster answers, lower cost, earlier risk visibility.</p>
+    </div>
+    <div class="diff">
+      <div class="diff-lbl">Outcome-based pricing</div>
+      <p>We price on client ROI — not days billed. In a sector with tight budgets and high accountability to donors, a partner who shares the risk is a fundamentally different proposition.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <div class="foot-logo">stretch engage</div>
+    <div style="margin-top:8px;font-size:.75rem;color:rgba(255,255,255,.3)">Salesforce consulting · Oslo, Norway</div>
+  </div>
+  <div class="foot-r">
+    <p>Stretch Engage AS<br>Nordic Nonprofit &amp; FinDock Practice<br>stretch.no/engage</p>
+  </div>
+</footer>
+
+</body>
+</html>
